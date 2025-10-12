@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://cn1of62gefhj"]
+
+[ext_resource type="Script" uid="uid://b1oj1tvs8wr20" path="res://scripts/player_scripts/player.gd" id="1_jqcdp"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_jqcdp"]
+height = 1.8
+radius = 0.4
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_jqcdp"]
+radius = 0.4
+height = 1.8
+
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("collision_shape", "camera")]
+script = ExtResource("1_jqcdp")
+collision_shape = NodePath("CollisionShape3D")
+camera = NodePath("Camera3D")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CylinderShape3D_jqcdp")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_jqcdp")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+fov = 85.0
