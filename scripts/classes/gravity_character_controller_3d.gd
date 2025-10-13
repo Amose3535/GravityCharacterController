@@ -29,7 +29,7 @@ class_name GravityCharacter3D
 ## Gravity strength ( by default 9.807 )
 @export var gravity : float = 9.807
 ## The speed at which the body will rotate (with its feet DOWN) towards the desired direction
-@export var align_speed : float = 5.0	
+@export var align_speed : float = 5.0
 
 @export_subgroup("Controls")
 ## Toggle sprint or not
@@ -77,6 +77,8 @@ class_name GravityCharacter3D
 @export_group("Settings")
 ## Wether rotation around the vertical axis for the body of the player or the 
 @export var view_mode : ViewMode = ViewMode.FIRST_PERSON
+## The third person camera. Only used when GravityCharacter3D.view_mode is set to ViewMode.THIRD_PERSON
+@export var third_person_camera : Camera3D = null
 #endregion EXPORTS
 
 
@@ -126,6 +128,8 @@ func _ready() -> void:
 	if !default_ground_detection:
 		_setup_collision_shape()
 		_setup_raycast()
+	if view_mode == ViewMode.THIRD_PERSON:
+		_setup_third_person()
 
 func _physics_process(delta: float) -> void:
 	_update_jump_buffer(delta)
@@ -206,6 +210,15 @@ func _setup_raycast() -> void:
 		ground_raycast.position = collision_shape.position - up_direction*ray_offset
 		# Set target position
 		ground_raycast.target_position = -up_direction * ground_ray_length
+
+func _setup_third_person() -> void:
+	if third_person_camera:
+		var forward_z = third_person_camera.global_transform.basis.z.normalized()
+		
+		var right_x = up_direction.cross(forward_z).normalized()
+		var forward = up_direction.cross(right_x).normalized()
+		
+		global_transform.basis = Basis(right_x, up_direction, -forward).orthonormalized()
 
 func _update_jump_buffer(delta: float) -> void:
 	if !jump_buffer_enabled:
@@ -312,7 +325,7 @@ func _handle_third_person_rotation(delta : float) -> void:
 		var target_basis : Basis = Basis.looking_at(movement_vector, up_direction)
 		
 		# Interpolazione lenta per una rotazione fluida (usiamo lo stesso align_speed)
-		global_transform.basis = global_transform.basis.slerp(target_basis, align_speed * delta)
+		#global_transform.basis = global_transform.basis.slerp(target_basis, align_speed * delta)
 
 func get_movement() -> Vector3:
 	# Get input Vector (on 2D plane perpendicular to y axis)
@@ -386,78 +399,35 @@ func _update_last_gravity_change(delta : float) -> void:
 	last_gravity_change += delta
 
 func _apply_gravity(delta: float) -> void:
-	if default_ground_detection:
-		if !constant_jump:
-			# if not on floor, add gravity
-			if !is_on_floor():
-				last_ground_contact += delta
-				# If i'm still pressing the jump key, apply a different formula with respect to if i stop pressing the key early (controllable jump heights)
-				if Input.is_action_pressed("jump"):
-					# If i'm pressing the jump button but the jump variable isn't true, update it
-					if !jumping:
-						jumping = true
-					# Apply the velocity along the gravity direction using the formula: g*t^2
-					velocity += gravity_direction * gravity * last_ground_contact * last_ground_contact
-				else:
-					# If i'm supposedly jumping but i have released the jump key, set the jumping variable to false and divide the last contactby a 
-					# certain value to fix the "slam" the character does if i release the jump key at the maximum height
-					if jumping:
-						jumping = false
-						last_ground_contact /= 2
-					# Apply the velocity along the gravity direction using the formula: g*t
-					velocity += gravity_direction * gravity * last_ground_contact
-			else:
-				# Reset timer
-				if last_ground_contact > 0:
-					last_ground_contact = 0
-				if jumping:
-					jumping = false
+	var grounded := is_on_floor() if default_ground_detection else on_floor
+	
+	# Not airborne
+	if grounded:
+		if last_ground_contact > 0.0:
+			last_ground_contact = 0.0
+		if jumping:
+			jumping = false
+		return
+	
+	# Airborne
+	last_ground_contact += delta
+	
+	if !constant_jump:
+		if Input.is_action_pressed("jump"):
+			if !jumping:
+				jumping = true
+			# g * t^2
+			velocity += gravity_direction * gravity * (last_ground_contact * last_ground_contact) # * delta
 		else:
-			# if not on floor, add gravity
-			if !is_on_floor():
-				last_ground_contact += delta
-				# Apply the velocity along the gravity direction using the formula: g*t
-				velocity += gravity_direction * gravity * last_ground_contact
-			else:
-				# Reset timer
-				if last_ground_contact > 0:
-					last_ground_contact = 0
+			if jumping:
+				jumping = false
+				last_ground_contact /= 2.0 # dampen strength by artificially halving the time it was airborne
+			# g * t
+			velocity += gravity_direction * gravity * last_ground_contact # * delta
 	else:
-		if !constant_jump:
-			# if not on floor, add gravity
-			if !on_floor:
-				last_ground_contact += delta
-				# If i'm still pressing the jump key, apply a different formula with respect to if i stop pressing the key early (controllable jump heights)
-				if Input.is_action_pressed("jump"):
-					# If i'm pressing the jump button but the jump variable isn't true, update it
-					if !jumping:
-						jumping = true
-					# Apply the velocity along the gravity direction using the formula: g*t^2
-					velocity += gravity_direction * gravity * last_ground_contact * last_ground_contact
-				else:
-					# If i'm supposedly jumping but i have released the jump key, set the jumping variable to false and divide the last contactby a 
-					# certain value to fix the "slam" the character does if i release the jump key at the maximum height
-					if jumping:
-						jumping = false
-						last_ground_contact /= 2
-					# Apply the velocity along the gravity direction using the formula: g*t
-					velocity += gravity_direction * gravity * last_ground_contact
-			else:
-				# Reset timer
-				if last_ground_contact > 0:
-					last_ground_contact = 0
-				if jumping:
-					jumping = false
-		else:
-			# if not on floor, add gravity
-			if !on_floor:
-				last_ground_contact += delta
-				# Apply the velocity along the gravity direction using the formula: g*t
-				velocity += gravity_direction * gravity * last_ground_contact
-			else:
-				# Reset timer
-				if last_ground_contact > 0:
-					last_ground_contact = 0
+		# Constant jump height: g * t
+		velocity += gravity_direction * gravity * last_ground_contact
+
 
 func _apply_ground_snapping(delta : float) -> void:
 	# Eseguiamo lo snapping SOLO se usiamo la ground detection customizzata

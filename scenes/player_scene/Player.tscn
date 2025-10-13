@@ -20,9 +20,10 @@ albedo_color = Color(0, 1, 0, 1)
 radius = 0.265
 height = 0.305
 
-[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("head")]
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("head", "collision_shape")]
 script = ExtResource("1_jqcdp")
 head = NodePath("Head")
+collision_shape = NodePath("CollisionShape3D")
 metadata/_custom_type_script = "uid://b1oj1tvs8wr20"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
@@ -35,10 +36,10 @@ mesh = SubResource("CapsuleMesh_jqcdp")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 
 [node name="GravityHopperComponent" type="RayCast3D" parent="Head" node_paths=PackedStringArray("gravity_character")]
-target_position = Vector3(0, 0, -20)
+target_position = Vector3(0, 0, -200)
 script = ExtResource("2_4n7h1")
 gravity_character = NodePath("../..")
-gravity_hop_range = 20.0
+gravity_hop_range = 200.0
 metadata/_custom_type_script = "uid://c7v4kj8ce2edy"
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Head/GravityHopperComponent"]

@@ -4,11 +4,14 @@ class_name GravityHopperComponent
 ## A component that extends raycasts to set thee GravityCharacter's Gravity direction to the normal of a surface at the click of a button.
 
 @export var gravity_character : GravityCharacter3D = null
-@export_range(0.1,100,0.1) var gravity_hop_range : float = 100.0:
+@export_range(0.1,100,0.1,"or_greater") var gravity_hop_range : float = 100.0:
 	set(new_range):
 		if gravity_character:
 			if gravity_character.head:
 				target_position = -gravity_character.head.transform.basis.z * new_range
+			else:
+				target_position = -gravity_character.transform.basis.z * new_range
+		gravity_hop_range = new_range
 
 
 func _get_configuration_warnings() -> PackedStringArray:
@@ -29,7 +32,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	if _get_configuration_warnings().size() == 0:
 		if event is InputEventKey:
 			if event.is_action_pressed("hop"):
-				print("Distance: %f"%gravity_hop_range)
+				#print("Distance: %f"%gravity_hop_range)
 				if get_collider() != null:
 					gravity_character.set_new_gravity_direction(-get_collision_normal())
-					print("Normal direction: %s"%get_collision_normal())
+					#print("Normal direction: %s"%get_collision_normal())
+			if event.is_action_pressed("de_hop"):
+				var default_gravity : Vector3 = ProjectSettings.get_setting("physics/3d/default_gravity_vector")
+				gravity_character.set_new_gravity_direction(default_gravity)
