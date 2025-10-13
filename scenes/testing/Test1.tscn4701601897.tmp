@@ -1,12 +1,11 @@
-[gd_scene load_steps=13 format=3 uid="uid://chp3c7jpqhu37"]
+[gd_scene load_steps=11 format=3 uid="uid://chp3c7jpqhu37"]
 
 [ext_resource type="Texture2D" uid="uid://dk6nfw1qf6dbl" path="res://addons/kenney_prototype_textures/purple/texture_04.png" id="1_epqof"]
 [ext_resource type="Script" uid="uid://bydsnmiuhexxi" path="res://scripts/scenes_scripts/test1/test_1.gd" id="1_usky3"]
 [ext_resource type="PackedScene" uid="uid://cn1of62gefhj" path="res://scenes/player_scene/Player.tscn" id="2_mrfcc"]
 [ext_resource type="Texture2D" uid="uid://b3he42r8rgfkp" path="res://icon.svg" id="3_epqof"]
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_usky3"]
-margin = 0.6
+[sub_resource type="BoxShape3D" id="BoxShape3D_mrfcc"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_usky3"]
 albedo_texture = ExtResource("1_epqof")
@@ -14,19 +13,8 @@ uv1_scale = Vector3(0.5, 0.5, 0.5)
 uv1_triplanar = true
 uv1_world_triplanar = true
 
-[sub_resource type="SphereMesh" id="SphereMesh_usky3"]
-lightmap_size_hint = Vector2i(17, 9)
+[sub_resource type="BoxMesh" id="BoxMesh_mrfcc"]
 material = SubResource("StandardMaterial3D_usky3")
-radial_segments = 128
-rings = 128
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_usky3"]
-custom_solver_bias = 0.065
-size = Vector3(50, 1, 50)
-
-[sub_resource type="BoxMesh" id="BoxMesh_5s5eh"]
-material = SubResource("StandardMaterial3D_usky3")
-size = Vector3(50, 1, 50)
 
 [sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_usky3"]
 rayleigh_coefficient = 0.2
@@ -54,43 +42,17 @@ script = ExtResource("1_usky3")
 [node name="Floor" type="Node3D" parent="Objects"]
 
 [node name="FloorObject" type="StaticBody3D" parent="Objects/Floor"]
-transform = Transform3D(400, 0, 0, 0, 400, 0, 0, 0, 400, 0, 0, 0)
+transform = Transform3D(20, 0, 0, 0, 1, 0, 0, 0, 20, 0, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Objects/Floor/FloorObject"]
-shape = SubResource("SphereShape3D_usky3")
-debug_fill = false
+shape = SubResource("BoxShape3D_mrfcc")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Objects/Floor/FloorObject"]
-mesh = SubResource("SphereMesh_usky3")
-
-[node name="FloorObject2" type="StaticBody3D" parent="Objects/Floor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 215, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Objects/Floor/FloorObject2"]
-shape = SubResource("BoxShape3D_usky3")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Objects/Floor/FloorObject2"]
-mesh = SubResource("BoxMesh_5s5eh")
-
-[node name="FloorObject3" type="StaticBody3D" parent="Objects/Floor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 200, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Objects/Floor/FloorObject3"]
-shape = SubResource("BoxShape3D_usky3")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Objects/Floor/FloorObject3"]
-mesh = SubResource("BoxMesh_5s5eh")
+mesh = SubResource("BoxMesh_mrfcc")
 
 [node name="Player" parent="." instance=ExtResource("2_mrfcc")]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.3708, 208.681, 0)
-safe_margin = 0.01
-gravity = 1.635
-align_speed = 10.0
-toggle_sprint = true
-jump_buffer_threshold = 0.2
-jump_strength = 14.0
-sprint_multiplier = 2.0
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_3afsc")
@@ -99,4 +61,5 @@ environment = SubResource("Environment_3afsc")
 transform = Transform3D(1, 0, 0, 0, 0.38328, 0.923632, 0, -0.923632, 0.38328, 0, 0, 0)
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(0.91465, 0.202124, -0.350089, 8.23011e-09, 0.866025, 0.5, 0.404248, -0.457325, 0.79211, -6.82648, 5.04608, 8.66084)
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 4, 4)
+current = true
