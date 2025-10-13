@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://cn1of62gefhj"]
+[gd_scene load_steps=8 format=3 uid="uid://cn1of62gefhj"]
 
 [ext_resource type="Script" uid="uid://b1oj1tvs8wr20" path="res://scripts/classes/gravity_character_controller_3d.gd" id="1_jqcdp"]
 [ext_resource type="Script" uid="uid://c7v4kj8ce2edy" path="res://scripts/classes/gravity_hopper_component.gd" id="2_4n7h1"]
+[ext_resource type="Texture2D" uid="uid://bd3qwl2rf2iu6" path="res://textures/reticles/dot/dot.png" id="3_33pix"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4n7h1"]
 radius = 0.4
@@ -34,14 +35,15 @@ mesh = SubResource("CapsuleMesh_jqcdp")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 
 [node name="GravityHopperComponent" type="RayCast3D" parent="Head" node_paths=PackedStringArray("gravity_character")]
-target_position = Vector3(0, 0, -100)
+target_position = Vector3(0, 0, -20)
 script = ExtResource("2_4n7h1")
 gravity_character = NodePath("../..")
-gravity_hop_range = 100.0
+gravity_hop_range = 20.0
 metadata/_custom_type_script = "uid://c7v4kj8ce2edy"
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Head/GravityHopperComponent"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -20)
+visible = false
 size = Vector3(0.1, 0.1, 0.1)
 material = SubResource("StandardMaterial3D_4n7h1")
 
@@ -55,3 +57,16 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.3)
 layers = 524288
 mesh = SubResource("SphereMesh_jqcdp")
 skeleton = NodePath("../..")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/CenterContainer"]
+layout_mode = 2
+texture = ExtResource("3_33pix")

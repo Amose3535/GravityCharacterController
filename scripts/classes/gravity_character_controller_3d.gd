@@ -29,7 +29,7 @@ class_name GravityCharacter3D
 ## Gravity strength ( by default 9.807 )
 @export var gravity : float = 9.807
 ## The speed at which the body will rotate (with its feet DOWN) towards the desired direction
-@export var align_speed : float = 100.0
+@export var align_speed : float = 5.0	
 
 @export_subgroup("Controls")
 ## Toggle sprint or not
@@ -56,13 +56,13 @@ class_name GravityCharacter3D
 ## The initial vertical speed when jumping
 @export var jump_strength : float = 6.0
 ## The movement speed of the player
-@export var speed: float = 5.0
+@export var speed: float = 8.0
 ## The sprint multiplier
-@export var sprint_multiplier : float = 1.5
+@export var sprint_multiplier : float = 2.0
 ## How fast you reach speed
-@export var accel: float = 40.0
+@export var accel: float = 45.0
 ## How fast you stop
-@export var decel: float = 30.0
+@export var decel: float = 45.0
 
 
 @export_group("Rotation")
