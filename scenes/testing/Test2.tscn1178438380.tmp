@@ -170,4 +170,3 @@ directional_shadow_max_distance = 155.0
 
 [node name="Player" parent="." instance=ExtResource("2_78l5s")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 14, 0)
-gravity = 20.0

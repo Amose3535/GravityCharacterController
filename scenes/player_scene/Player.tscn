@@ -24,6 +24,13 @@ height = 0.305
 script = ExtResource("1_jqcdp")
 head = NodePath("Head")
 collision_shape = NodePath("CollisionShape3D")
+toggle_sprint = true
+jump_buffer_threshold = 0.2
+jump_strength = 8.0
+speed = 10.0
+accel = 47.0
+decel = 47.0
+align_speed = 7.0
 metadata/_custom_type_script = "uid://b1oj1tvs8wr20"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
@@ -36,10 +43,10 @@ mesh = SubResource("CapsuleMesh_jqcdp")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 
 [node name="GravityHopperComponent" type="RayCast3D" parent="Head" node_paths=PackedStringArray("gravity_character")]
-target_position = Vector3(0, 0, -200)
+target_position = Vector3(0, 0, -400)
 script = ExtResource("2_4n7h1")
 gravity_character = NodePath("../..")
-gravity_hop_range = 200.0
+gravity_hop_range = 400.0
 metadata/_custom_type_script = "uid://c7v4kj8ce2edy"
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Head/GravityHopperComponent"]

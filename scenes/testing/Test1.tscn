@@ -87,15 +87,10 @@ shape = SubResource("BoxShape3D_usky3")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Objects/Floor/FloorObject3"]
 mesh = SubResource("BoxMesh_5s5eh")
 
-[node name="Player" parent="." node_paths=PackedStringArray("third_person_camera") instance=ExtResource("2_mrfcc")]
+[node name="Player" parent="." instance=ExtResource("2_mrfcc")]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.3708, 208.681, 0)
 safe_margin = 0.01
-gravity = 6.538
-toggle_sprint = true
-jump_buffer_threshold = 0.2
-jump_strength = 14.0
-third_person_camera = NodePath("../Camera3D")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_3afsc")
