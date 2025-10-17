@@ -14,6 +14,13 @@ class_name GravityController3D
 @export var head : Node3D = null
 @export var collision_shape : CollisionShape3D = null
 
+@export_group("Gravity")
+## The speed at which the body will rotate (with its feet DOWN) towards the desired direction
+@export var align_speed : float = 5.0
+## Toggles cooldown for gravity direction changes
+@export var gravity_change_cooldown : bool = false
+## How much time (in seconds) passes before the gravity can change again
+@export var gravity_cooldown : float = 1.0
 
 @export_group("Controls")
 ## Toggle sprint or not
@@ -54,6 +61,8 @@ class_name GravityController3D
 @export var view_mode : ViewMode = ViewMode.FIRST_PERSON
 ## The third person camera. Only used when GravityCharacter3D.view_mode is set to ViewMode.THIRD_PERSON
 @export var third_person_camera : Camera3D = null
+## Determines wether to reset the timer that measures the last_ground_contact upon gravity change
+@export var reset_attraction_on_gravity_change : bool = true
 
 
 ## The state of the mouse
@@ -71,6 +80,10 @@ enum ViewMode {
 	## In third person, the rotation for the body and the head is determined by the movement direction
 	THIRD_PERSON
 }
+## last time since touching ground (commonly used for gravity)
+var last_ground_contact : float = 0.0
+## Time passed since the last gravity change (used for cooldown).
+var last_gravity_change : float = 0.0
 
 func _ready() -> void:
 	if auto_mouse_capture:
@@ -82,6 +95,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	_update_jump_buffer(delta)
 	_update_sprint_state()
+	_update_last_gravity_change(delta)
 	
 	_move_perpendicularly_to_gravity(delta)
 	_handle_jump()
@@ -100,8 +114,35 @@ func _unhandled_input(event: InputEvent) -> void:
 		if event is InputEventMouseMotion:
 			_handle_mouse_rotation(event)
 
+func _on_gravity_changed(from: Vector3, to: Vector3) -> void:
+	if reset_attraction_on_gravity_change:
+		last_ground_contact = 0
+
 
 #region CUSTOM FUNCTIONS
+## API used to wrap the gravity_direction setter with support for cooldown etc.
+func set_new_gravity_direction(new_dir: Vector3, force: bool = !gravity_change_cooldown) -> bool:
+	
+	# La gravità non cambia se la nuova direzione è identica alla corrente
+	if new_dir.normalized().is_equal_approx(gravity_direction):
+		return true
+	
+	# Controllo di override: se 'force' è true, procediamo immediatamente
+	if force:
+		gravity_direction = new_dir # Uses setter
+		return true
+	
+	# Gestione del Cooldown:
+	if gravity_change_cooldown:
+		if last_gravity_change < gravity_cooldown:
+			# Ancora in cooldown
+			return false
+	
+	# Cooldown non attivo O Cooldown completato:
+	gravity_direction = new_dir # Uses setter
+	last_gravity_change = 0.0 # Reset del timer
+	return true
+
 func toggle_mouse_mode() -> void:
 	if mouse_captured:
 		mouse_captured = false
@@ -167,6 +208,9 @@ func _update_sprint_state() -> void:
 	var input_movement_active = get_input_vector().length_squared() > 0.05
 	if sprinting and !input_movement_active:
 		sprinting = false
+
+func _update_last_gravity_change(delta : float) -> void:
+	last_gravity_change += delta
 
 func _handle_mouse_rotation(event: InputEventMouseMotion) -> void:
 	# 1. Rotazione del Corpo (Yaw) - Attorno all'asse UP (Pitch fisso)

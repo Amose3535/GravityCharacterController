@@ -91,6 +91,7 @@ mesh = SubResource("BoxMesh_5s5eh")
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.3708, 208.681, 0)
 safe_margin = 0.01
+align_speed = 5.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_3afsc")
