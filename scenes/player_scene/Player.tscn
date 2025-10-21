@@ -1,8 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://cn1of62gefhj"]
+[gd_scene load_steps=10 format=3 uid="uid://cn1of62gefhj"]
 
 [ext_resource type="Script" uid="uid://b1oj1tvs8wr20" path="res://scripts/classes/gravity_character_controller_3d.gd" id="1_jqcdp"]
-[ext_resource type="Script" uid="uid://c7v4kj8ce2edy" path="res://scripts/classes/gravity_hopper_component.gd" id="2_4n7h1"]
+[ext_resource type="Script" uid="uid://c7v4kj8ce2edy" path="res://scripts/classes/components/gravity_hopper_component.gd" id="2_4n7h1"]
 [ext_resource type="Texture2D" uid="uid://bd3qwl2rf2iu6" path="res://textures/reticles/dot/dot.png" id="3_33pix"]
+[ext_resource type="Script" uid="uid://bkqburwr7i3ua" path="res://scripts/classes/components/rotation_component.gd" id="4_obqj8"]
+[ext_resource type="Script" uid="uid://d3ojwn2e8or8v" path="res://scripts/classes/components/gravity_component.gd" id="5_rmeeg"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4n7h1"]
 radius = 0.4
@@ -47,7 +49,6 @@ current = true
 fov = 85.0
 
 [node name="GravityHopperComponent" type="RayCast3D" parent="Head/Camera3D" node_paths=PackedStringArray("gravity_character")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 target_position = Vector3(0, 0, -400)
 script = ExtResource("2_4n7h1")
 gravity_character = NodePath("../../..")
@@ -78,3 +79,18 @@ grow_vertical = 2
 [node name="TextureRect" type="TextureRect" parent="CanvasLayer/CenterContainer"]
 layout_mode = 2
 texture = ExtResource("3_33pix")
+
+[node name="Components" type="Node" parent="."]
+
+[node name="RotationComponent" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
+script = ExtResource("4_obqj8")
+controller = NodePath("../..")
+metadata/_custom_type_script = "uid://bkqburwr7i3ua"
+
+[node name="GravityComponent" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
+script = ExtResource("5_rmeeg")
+align_speed = null
+gravity_change_cooldown = null
+gravity_cooldown = null
+controller = NodePath("../..")
+metadata/_custom_type_script = "uid://d3ojwn2e8or8v"

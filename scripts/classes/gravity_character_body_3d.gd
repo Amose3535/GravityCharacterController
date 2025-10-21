@@ -25,15 +25,13 @@ signal gravity_changed(from: Vector3, to: Vector3)
 
 
 
-
-
 #region CUSTOM FUNCTIONS
-## API used to execute some user-defined logic using this neat function called upon gravity change
+## API used to execute some user-defined logic using this neat function called upon gravity change.[br]IT's empty by default.
 func _on_gravity_changed(old_direction : Vector3, new_direction : Vector3) -> void:
 	pass
 
 
-## API used to project a vector v onto a plane with normal n. This is commonly used to find the movement on walls and surfaces.
+## API used from child script/components to project a vector v onto a plane with normal n.[br]This is commonly used to find the movement on walls and surfaces.
 static func project_on_plane(v: Vector3, n: Vector3) -> Vector3:
 	return v - n * v.dot(n)
 #endregion CUSTOM FUNCTIONS

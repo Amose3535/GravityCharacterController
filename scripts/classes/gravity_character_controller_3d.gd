@@ -4,23 +4,10 @@ class_name GravityController3D
 ## An implementation of GravityCharacter3D that supports rotation matching the gravity vector. And mouse / JoyPad rotation
 
 
-
-
-## The CollisionShape3D. Not mandatory when using the default ground detection but it's necessary when using the custom ground detection (used to get the lowest point of the character)
-
-
-@export_group("Nodes")
+@export_group("Components")
 ## The head node. Can be a pivot for the camera and other nodes, the camera itself, or really anything that should be considered a "head"
 @export var head : Node3D = null
 @export var collision_shape : CollisionShape3D = null
-
-@export_group("Gravity")
-## The speed at which the body will rotate (with its feet DOWN) towards the desired direction
-@export var align_speed : float = 5.0
-## Toggles cooldown for gravity direction changes
-@export var gravity_change_cooldown : bool = false
-## How much time (in seconds) passes before the gravity can change again
-@export var gravity_cooldown : float = 1.0
 
 @export_group("Controls")
 ## Toggle sprint or not
@@ -47,23 +34,23 @@ class_name GravityController3D
 @export var decel: float = 45.0
 
 
-@export_group("Rotation")
-## Sensitivity for the mouse/analog stick X axis (Yaw)
-@export_range(0.0, 1.0, 0.0001) var mouse_sensitivity_x : float = 0.002
-## Sensitivity for the mouse/analog stick Y axis (Pitch)
-@export_range(0.0, 1.0, 0.0001) var mouse_sensitivity_y : float = 0.002
-## Maximum vertical angle for the head rotation (in degrees)
-@export_range(0.1, 89.9, 0.100) var max_vertical_angle : float = 89.9
-
-
 @export_group("Settings")
 ## Wether rotation around the vertical axis for the body of the player or the 
 @export var view_mode : ViewMode = ViewMode.FIRST_PERSON
 ## The third person camera. Only used when GravityCharacter3D.view_mode is set to ViewMode.THIRD_PERSON
 @export var third_person_camera : Camera3D = null
-## Determines wether to reset the timer that measures the last_ground_contact upon gravity change
-@export var reset_attraction_on_gravity_change : bool = true
 
+
+## The speed at which the body will rotate (with its feet DOWN) towards the desired direction
+@export var align_speed : float = 5.0
+## Toggles cooldown for gravity direction changes
+@export var gravity_change_cooldown : bool = false
+## How much time (in seconds) passes before the gravity can change again
+@export var gravity_cooldown : float = 1.0
+
+
+## Time passed since the last gravity change (used for cooldown).
+var last_gravity_change : float = 0.0
 
 ## The state of the mouse
 var mouse_captured : bool = false
@@ -80,10 +67,12 @@ enum ViewMode {
 	## In third person, the rotation for the body and the head is determined by the movement direction
 	THIRD_PERSON
 }
-## last time since touching ground (commonly used for gravity)
-var last_ground_contact : float = 0.0
-## Time passed since the last gravity change (used for cooldown).
-var last_gravity_change : float = 0.0
+
+
+
+
+
+
 
 func _ready() -> void:
 	if auto_mouse_capture:
@@ -93,55 +82,31 @@ func _ready() -> void:
 		_setup_third_person()
 
 func _physics_process(delta: float) -> void:
+	# Jump related functions
 	_update_jump_buffer(delta)
 	_update_sprint_state()
-	_update_last_gravity_change(delta)
-	
-	_move_perpendicularly_to_gravity(delta)
 	_handle_jump()
+	
+	# Gravity related functions
+	_align_controller_with_gravity(delta)
+	_update_last_gravity_change(delta)
 	_apply_gravity(delta)
 	
-	align_look_with_gravity(delta)
+	# Movement related functions
+	_move_perpendicularly_to_gravity(delta)
+	
 	move_and_slide()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		if event.is_action_pressed("ui_cancel"):
 			toggle_mouse_mode()
-	
-	# Mouse rotation
-	if view_mode == ViewMode.FIRST_PERSON and mouse_captured:
-		if event is InputEventMouseMotion:
-			_handle_mouse_rotation(event)
 
 func _on_gravity_changed(from: Vector3, to: Vector3) -> void:
-	if reset_attraction_on_gravity_change:
-		last_ground_contact = 0
+	pass
 
 
 #region CUSTOM FUNCTIONS
-## API used to wrap the gravity_direction setter with support for cooldown etc.
-func set_new_gravity_direction(new_dir: Vector3, force: bool = !gravity_change_cooldown) -> bool:
-	
-	# La gravità non cambia se la nuova direzione è identica alla corrente
-	if new_dir.normalized().is_equal_approx(gravity_direction):
-		return true
-	
-	# Controllo di override: se 'force' è true, procediamo immediatamente
-	if force:
-		gravity_direction = new_dir # Uses setter
-		return true
-	
-	# Gestione del Cooldown:
-	if gravity_change_cooldown:
-		if last_gravity_change < gravity_cooldown:
-			# Ancora in cooldown
-			return false
-	
-	# Cooldown non attivo O Cooldown completato:
-	gravity_direction = new_dir # Uses setter
-	last_gravity_change = 0.0 # Reset del timer
-	return true
 
 func toggle_mouse_mode() -> void:
 	if mouse_captured:
@@ -209,31 +174,8 @@ func _update_sprint_state() -> void:
 	if sprinting and !input_movement_active:
 		sprinting = false
 
-func _update_last_gravity_change(delta : float) -> void:
-	last_gravity_change += delta
 
-func _handle_mouse_rotation(event: InputEventMouseMotion) -> void:
-	# 1. Rotazione del Corpo (Yaw) - Attorno all'asse UP (Pitch fisso)
-	# Ruota il CharacterBody3D attorno al suo asse UP (-gravity_direction)
-	var yaw_angle : float = -event.relative.x * mouse_sensitivity_x
-	
-	# Applichiamo la rotazione usando l'asse UP (gravità)
-	# Nota: L'uso di global_transform.basis.rotated() è robusto con la gravità
-	global_transform.basis = global_transform.basis.rotated(up_direction, yaw_angle)
-	
-	# 2. Rotazione della Testa (Pitch) - Guardare su/giù
-	# Ruota il nodo head attorno al suo asse X locale.
-	var pitch_angle : float = -event.relative.y * mouse_sensitivity_y
-	
-	# Calcoliamo la rotazione finale desiderata
-	var new_pitch : float = head.rotation.x + pitch_angle
-	
-	# Limitiamo la rotazione (in radianti)
-	var max_angle_rad : float = deg_to_rad(max_vertical_angle)
-	new_pitch = clamp(new_pitch, -max_angle_rad, max_angle_rad)
-	
-	# Applichiamo la rotazione alla testa/camera (solo sull'asse X)
-	head.rotation.x = new_pitch
+
 
 func _handle_third_person_rotation(delta : float) -> void:
 	# Rotazione in terza persona:
@@ -249,44 +191,7 @@ func _handle_third_person_rotation(delta : float) -> void:
 		# Interpolazione lenta per una rotazione fluida (usiamo lo stesso align_speed)
 		#global_transform.basis = global_transform.basis.slerp(target_basis, align_speed * delta)
 
-## API used to align the player's rotation along the gravity's direction using what it's looking at (it's more natual since it follows the look/rotation)
-func align_look_with_gravity(delta: float) -> void:
-	# 1. Calcola l'allineamento verticale (Roll e Pitch)
-	
-	# La nuova base deve avere 'up_direction' come asse Y.
-	# Il modo migliore per calcolarla è con 'Basis.looking_at'.
-	
-	# Usiamo la direzione 'forward' della telecamera (o del CharacterBody) ma 
-	# la proiettiamo sul piano perpendicolare alla nuova gravità.
-	
-	# Direzione 'forward' attuale (libera da roll/pitch indesiderati)
-	# Manteniamo la componente 'Yaw' (rotazione orizzontale) della telecamera.
-	var camera_forward_dir : Vector3 = -head.global_transform.basis.z
-	
-	# Proiettiamo la direzione della telecamera sul piano del nuovo "pavimento" (Gravity-Aligned Plane)
-	var desired_forward : Vector3 = project_on_plane(camera_forward_dir, up_direction).normalized()
-	
-	# Se il vettore è zero (ad esempio, se la head guarda perfettamente in basso/alto),
-	# usiamo il forward attuale del player per evitare un bug di 'looking_at'.
-	if desired_forward.length_squared() < 0.0001:
-		desired_forward = project_on_plane(-global_transform.basis.z, up_direction).normalized()
 
-	# Calcola la base desiderata: guarda 'desired_forward' con 'up_direction' come 'su'
-	var target_basis : Basis = Basis.looking_at(desired_forward, up_direction)
-
-	# 2. Interpolazione (rotazione graduale)
-	global_transform.basis = global_transform.basis.slerp(target_basis, align_speed * delta)
-
-##API used to align the player's rotation along the gravity's direction using its forward direction (less natural but not head-dependant)
-func align_body_with_gravity(delta: float) -> void:
-	# Proiettiamo la direzione della telecamera sul piano del nuovo "pavimento" (Gravity-Aligned Plane)
-	var desired_forward : Vector3 = project_on_plane(-global_transform.basis.z, up_direction).normalized()
-
-	# Calcola la base desiderata: guarda 'desired_forward' con 'up_direction' come 'su'
-	var target_basis : Basis = Basis.looking_at(desired_forward, up_direction)
-
-	# 2. Interpolazione (rotazione graduale)
-	global_transform.basis = global_transform.basis.slerp(target_basis, align_speed * delta)
 
 func get_movement() -> Vector3:
 	# Get input Vector (on 2D plane perpendicular to y axis)
@@ -329,23 +234,78 @@ func _handle_jump() -> void:
 	
 	if should_jump:
 		velocity += up_direction * jump_strength
-		
-		# IMPORTANTE: Resetta il contatto a terra per evitare bug di gravità nel frame successivo.
-		last_ground_contact = 0.0
+
+func get_input_vector() -> Vector2:
+	var input_dir = Vector2(
+	Input.get_axis("move_left","move_right"),
+	Input.get_axis("move_backward","move_forward")
+	)
+	return input_dir
+
+#region GRAVITY FUNCTIONS
+## Increments the last change of gravity by delta
+func _update_last_gravity_change(delta : float) -> void:
+	last_gravity_change += delta
+
+## API used to align the player's rotation along the gravity's direction using what it's looking at (it's more natual since it follows the look/rotation)
+func _align_controller_with_gravity(delta: float) -> void:
+	# 1. Calcola l'allineamento verticale (Roll e Pitch)
+	
+	# La nuova base deve avere 'up_direction' come asse Y.
+	# Il modo migliore per calcolarla è con 'Basis.looking_at'.
+	
+	# Usiamo la direzione 'forward' della telecamera (o del CharacterBody) ma 
+	# la proiettiamo sul piano perpendicolare alla nuova gravità.
+	
+	# Direzione 'forward' attuale (libera da roll/pitch indesiderati)
+	# Manteniamo la componente 'Yaw' (rotazione orizzontale) della telecamera.
+	var camera_forward_dir : Vector3 = -head.global_transform.basis.z
+	
+	# Proiettiamo la direzione della telecamera sul piano del nuovo "pavimento" (Gravity-Aligned Plane)
+	var desired_forward : Vector3 = GravityController3D.project_on_plane(camera_forward_dir, up_direction).normalized()
+	
+	# Se il vettore è zero (ad esempio, se la head guarda perfettamente in basso/alto),
+	# usiamo il forward attuale del player per evitare un bug di 'looking_at'.
+	if desired_forward.length_squared() < 0.0001:
+		desired_forward = GravityController3D.project_on_plane(-global_transform.basis.z, up_direction).normalized()
+	
+	# Calcola la base desiderata: guarda 'desired_forward' con 'up_direction' come 'su'
+	var target_basis : Basis = Basis.looking_at(desired_forward, up_direction)
+	
+	# 2. Interpolazione (rotazione graduale)
+	global_transform.basis = global_transform.basis.slerp(target_basis, align_speed * delta)
+
+## API used to wrap the gravity_direction setter with support for cooldown etc.
+func set_new_gravity_direction(new_dir: Vector3, force: bool = !gravity_change_cooldown) -> bool:
+	
+	# La gravità non cambia se la nuova direzione è identica alla corrente
+	if new_dir.normalized().is_equal_approx(gravity_direction):
+		return true
+	
+	# Controllo di override: se 'force' è true, procediamo immediatamente
+	if force:
+		gravity_direction = new_dir # Uses setter
+		return true
+	
+	# Gestione del Cooldown:
+	if gravity_change_cooldown:
+		if last_gravity_change < gravity_cooldown:
+			# Ancora in cooldown
+			return false
+	
+	# Cooldown non attivo O Cooldown completato:
+	gravity_direction = new_dir # Uses setter
+	last_gravity_change = 0.0 # Reset del timer
+	return true
 
 func _apply_gravity(delta: float) -> void:
-	var grounded := is_on_floor()
+	var grounded : bool = is_on_floor()
 	
 	# Not airborne
 	if grounded:
-		if last_ground_contact > 0.0:
-			last_ground_contact = 0.0
 		if jumping:
 			jumping = false
 		return
-	
-	# Airborne
-	last_ground_contact += delta
 	
 	if !constant_jump:
 		if Input.is_action_pressed("jump"):
@@ -355,17 +315,12 @@ func _apply_gravity(delta: float) -> void:
 		else:
 			if jumping:
 				jumping = false
-				last_ground_contact /= 2.0 # dampen strength by artificially halving the time it was airborne
 			velocity += gravity_direction * 2*gravity * delta
 	else:
 		# Constant jump height: g * t
 		velocity += gravity_direction * 2*gravity * delta
+#endregion GRAVITY
 
-func get_input_vector() -> Vector2:
-	var input_dir = Vector2(
-	Input.get_axis("move_left","move_right"),
-	Input.get_axis("move_backward","move_forward")
-	)
-	return input_dir
+
 
 #endregion CUSTOM FUNCTIONS
