@@ -1,5 +1,5 @@
 extends BaseComponent
-class_name MovementComponent
+class_name WalkComponent
 
 @export_group("Controls")
 ## Toggle sprint or not

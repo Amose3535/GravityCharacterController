@@ -7,7 +7,7 @@
 [ext_resource type="Script" uid="uid://bkqburwr7i3ua" path="res://addons/gravity_character_plugin/scripts/classes/components/rotation_component.gd" id="4_obqj8"]
 [ext_resource type="Script" uid="uid://dp5554hrflodi" path="res://addons/gravity_character_plugin/scripts/classes/components/jump_component.gd" id="5_rmeeg"]
 [ext_resource type="Script" uid="uid://dbwy1xcpyebf1" path="res://addons/gravity_character_plugin/scripts/classes/components/mouse_handler_component.gd" id="6_s8bxt"]
-[ext_resource type="Script" uid="uid://cc5ywuhm56u55" path="res://addons/gravity_character_plugin/scripts/classes/components/movement_component.gd" id="7_rikgj"]
+[ext_resource type="Script" uid="uid://cc5ywuhm56u55" path="res://addons/gravity_character_plugin/scripts/classes/components/walk_component.gd" id="7_rikgj"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4n7h1"]
 radius = 0.4

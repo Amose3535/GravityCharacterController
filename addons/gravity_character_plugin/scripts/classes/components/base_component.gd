@@ -3,9 +3,10 @@
 @icon("res://addons/gravity_character_plugin/assets/textures/icons/ComponentIcon.png")
 extends Node
 class_name BaseComponent
+## The base class from which all components will inherit from. Only used to get the referenct to the 
 
-## The node that will handle all component nodes. This is usually the owner (GravityController3D)
-@export var controller : GravityController3D:
+## The node that will handle all component nodes. This is usually the owner (GravityCharacter3D)
+@export var controller : GravityCharacter3D:
 	get:
 		#print("GETTING CONTROLLER NODE: controller=%s | CORRECT_SETUP=%s"%[str(controller),str(CORRECT_SETUP)])
 		CORRECT_SETUP = (controller != null)

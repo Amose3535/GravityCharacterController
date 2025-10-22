@@ -6,7 +6,7 @@ class_name ComponentContainer
 ## It automatically assigns the parent GravityController3D to all BaseComponent children.
 
 # Riferimento al nodo GravityController3D padre
-var controller: GravityController3D = null
+var controller: GravityCharacter3D = null
 
 # Flag che indica se il setup è corretto
 var is_setup_ok: bool = false
@@ -34,7 +34,7 @@ func _check_setup_and_assign() -> void:
 	var parent_candidate = get_parent()
 	
 	# 1. VERIFICA IL NODO PADRE
-	if parent_candidate is GravityController3D:
+	if parent_candidate is GravityCharacter3D:
 		controller = parent_candidate
 		is_setup_ok = true
 	else:
@@ -53,9 +53,18 @@ func _set_controller_node() -> void:
 	if !controller:
 		return
 		
-	for child in get_children():
-		if child is BaseComponent: 
-			(child as BaseComponent).controller = controller
+	for child in get_components():
+		child.controller = controller
+
+## API to get all components nodes child of the ComponentContainer node
+func get_components() -> Array[BaseComponent]:
+	var ret_arr : Array[BaseComponent] = []
+	var children = get_children()
+	if children.size() == 0: return []
+	for child in children:
+		if child is BaseComponent:
+			ret_arr.append(child)
+	return ret_arr
 
 # ==============================================================================
 # EDITOR WARNINGS
