@@ -4,11 +4,13 @@ class_name GravityController3D
 ## An implementation of GravityCharacter3D that supports rotation matching the gravity vector. And mouse / JoyPad rotation
 
 
-@export_group("Nodes")
+@export_group("Setup")
 ## The head node. Can be a pivot for the camera and other nodes, the camera itself, or really anything that should be considered a "head"
 @export var head : Node3D = null
 ## The collision shape. Not necessary but if provided can reduce computations needed by child nodes/component nodes
 @export var collision_shape : CollisionShape3D = null
+## The ComponentContainer node. Not necessary but useful when making a complex character component. It's to be considered as mandatory when using the premade components
+@export var component_container : ComponentContainer = null
 
 @export_group("Gravity related")
 ## The speed at which the body will rotate (with its feet DOWN) towards the desired direction

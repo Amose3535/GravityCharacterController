@@ -74,7 +74,7 @@ func _get_configuration_warnings() -> PackedStringArray:
 	var warns: PackedStringArray = []
 	
 	# Non usare 'is_setup_ok' direttamente, ricontrolla per precisione
-	if !get_parent() is GravityController3D:
+	if !(get_parent() is GravityController3D):
 		warns.append("This node must be a direct child of a 'GravityController3D' node.")
 	
 	return warns
