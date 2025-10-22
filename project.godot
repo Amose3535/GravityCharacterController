@@ -11,7 +11,6 @@ config_version=5
 [application]
 
 config/name="F/S_GJ-2025"
-run/main_scene="uid://cne7ibwhdj7ar"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 
@@ -19,14 +18,17 @@ config/icon="res://icon.svg"
 
 project/assembly_name="F-S_GJ-2025"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gravity_character_plugin/plugin.cfg")
+
 [file_customization]
 
 folder_colors={
 "res://addons/": "blue",
-"res://assets/": "yellow",
-"res://scenes/": "purple",
-"res://scripts/": "teal",
-"res://textures/": "red"
+"res://addons/gravity_character_plugin/assets/": "yellow",
+"res://addons/gravity_character_plugin/scenes/": "purple",
+"res://addons/gravity_character_plugin/scripts/": "teal"
 }
 
 [input]

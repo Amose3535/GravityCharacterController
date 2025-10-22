@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cg404ue1aldde"
-path="res://.godot/imported/ComponentIcon.png-a49980d3f12389ee41d73ff606194203.ctex"
+uid="uid://bd3qwl2rf2iu6"
+path="res://.godot/imported/dot.png-04300bf21bcb9f1076cf04b729e50e2d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/ComponentIcon.png"
-dest_files=["res://.godot/imported/ComponentIcon.png-a49980d3f12389ee41d73ff606194203.ctex"]
+source_file="res://addons/gravity_character_plugin/assets/textures/reticles/dot/dot.png"
+dest_files=["res://.godot/imported/dot.png-04300bf21bcb9f1076cf04b729e50e2d.ctex"]
 
 [params]
 

@@ -1,8 +1,8 @@
 [gd_scene load_steps=14 format=3 uid="uid://chp3c7jpqhu37"]
 
 [ext_resource type="Texture2D" uid="uid://dk6nfw1qf6dbl" path="res://addons/kenney_prototype_textures/purple/texture_04.png" id="1_epqof"]
-[ext_resource type="Script" uid="uid://bydsnmiuhexxi" path="res://scripts/scenes_scripts/test1/test_1.gd" id="1_usky3"]
-[ext_resource type="PackedScene" uid="uid://cn1of62gefhj" path="res://scenes/player_scene/Player.tscn" id="2_mrfcc"]
+[ext_resource type="Script" uid="uid://bydsnmiuhexxi" path="res://addons/gravity_character_plugin/scripts/scenes_scripts/test1/test_1.gd" id="1_usky3"]
+[ext_resource type="PackedScene" uid="uid://cn1of62gefhj" path="res://addons/gravity_character_plugin/scenes/player_scene/Player.tscn" id="2_mrfcc"]
 [ext_resource type="Texture2D" uid="uid://b3he42r8rgfkp" path="res://icon.svg" id="3_epqof"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_usky3"]

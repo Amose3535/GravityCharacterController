@@ -1,13 +1,13 @@
 [gd_scene load_steps=11 format=3 uid="uid://cn1of62gefhj"]
 
-[ext_resource type="Script" uid="uid://b1oj1tvs8wr20" path="res://scripts/classes/gravity_character_controller_3d.gd" id="1_jqcdp"]
-[ext_resource type="Script" uid="uid://c7v4kj8ce2edy" path="res://scripts/classes/components/gravity_hopper_component.gd" id="2_4n7h1"]
-[ext_resource type="Script" uid="uid://dumk1spdmner5" path="res://scripts/classes/components/component_container.gd" id="2_6oeo6"]
-[ext_resource type="Texture2D" uid="uid://bd3qwl2rf2iu6" path="res://textures/reticles/dot/dot.png" id="3_33pix"]
-[ext_resource type="Script" uid="uid://bkqburwr7i3ua" path="res://scripts/classes/components/rotation_component.gd" id="4_obqj8"]
-[ext_resource type="Script" uid="uid://dp5554hrflodi" path="res://scripts/classes/components/jump_component.gd" id="5_rmeeg"]
-[ext_resource type="Script" uid="uid://dbwy1xcpyebf1" path="res://scripts/classes/components/mouse_handler_component.gd" id="6_s8bxt"]
-[ext_resource type="Script" uid="uid://cc5ywuhm56u55" path="res://scripts/classes/components/movement_component.gd" id="7_rikgj"]
+[ext_resource type="Script" uid="uid://b1oj1tvs8wr20" path="res://addons/gravity_character_plugin/scripts/classes/gravity_character_controller_3d.gd" id="1_jqcdp"]
+[ext_resource type="Script" uid="uid://c7v4kj8ce2edy" path="res://addons/gravity_character_plugin/scripts/classes/components/gravity_hopper_component.gd" id="2_4n7h1"]
+[ext_resource type="Script" uid="uid://dumk1spdmner5" path="res://addons/gravity_character_plugin/scripts/classes/components/component_container.gd" id="2_6oeo6"]
+[ext_resource type="Texture2D" uid="uid://bd3qwl2rf2iu6" path="res://addons/gravity_character_plugin/assets/textures/reticles/dot/dot.png" id="3_33pix"]
+[ext_resource type="Script" uid="uid://bkqburwr7i3ua" path="res://addons/gravity_character_plugin/scripts/classes/components/rotation_component.gd" id="4_obqj8"]
+[ext_resource type="Script" uid="uid://dp5554hrflodi" path="res://addons/gravity_character_plugin/scripts/classes/components/jump_component.gd" id="5_rmeeg"]
+[ext_resource type="Script" uid="uid://dbwy1xcpyebf1" path="res://addons/gravity_character_plugin/scripts/classes/components/mouse_handler_component.gd" id="6_s8bxt"]
+[ext_resource type="Script" uid="uid://cc5ywuhm56u55" path="res://addons/gravity_character_plugin/scripts/classes/components/movement_component.gd" id="7_rikgj"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4n7h1"]
 radius = 0.4
