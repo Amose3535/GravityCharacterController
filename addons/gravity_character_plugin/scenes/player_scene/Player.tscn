@@ -60,11 +60,6 @@ script = ExtResource("4_obqj8")
 controller = NodePath("../..")
 metadata/_custom_type_script = "uid://bkqburwr7i3ua"
 
-[node name="GravityHopperComponent" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
-script = ExtResource("2_4n7h1")
-controller = NodePath("../..")
-metadata/_custom_type_script = "uid://c7v4kj8ce2edy"
-
 [node name="JumpComponent" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
 script = ExtResource("5_rmeeg")
 jump_strength = 9.0
@@ -81,3 +76,8 @@ metadata/_custom_type_script = "uid://dbwy1xcpyebf1"
 script = ExtResource("7_rikgj")
 controller = NodePath("../..")
 metadata/_custom_type_script = "uid://cc5ywuhm56u55"
+
+[node name="GravityHopperComponent" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
+script = ExtResource("2_4n7h1")
+controller = NodePath("../..")
+metadata/_custom_type_script = "uid://c7v4kj8ce2edy"

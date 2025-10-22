@@ -1,4 +1,5 @@
 @tool
+@icon("res://addons/gravity_character_plugin/assets/textures/icons/ComponentContainerIcon.png")
 extends Node
 class_name ComponentContainer
 ## A class used as a "folder" or a container for other components in a scene. 
