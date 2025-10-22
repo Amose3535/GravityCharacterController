@@ -164,10 +164,11 @@ environment = SubResource("Environment_icpk1")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.918805, 0.197356, 0.34183, -0.17628, -0.569689, 0.802732, 0.353161, -0.797812, -0.488644, 0, 0, 0)
 shadow_enabled = true
-directional_shadow_mode = 1
+directional_shadow_split_1 = 0.3
+directional_shadow_split_2 = 0.6
+directional_shadow_split_3 = 1.0
 directional_shadow_blend_splits = true
-directional_shadow_max_distance = 155.0
+directional_shadow_pancake_size = 60.0
 
 [node name="Player" parent="." instance=ExtResource("2_78l5s")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.40018, 0)
-gravity = 20.0

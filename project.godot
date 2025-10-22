@@ -19,6 +19,16 @@ config/icon="res://icon.svg"
 
 project/assembly_name="F-S_GJ-2025"
 
+[file_customization]
+
+folder_colors={
+"res://addons/": "blue",
+"res://assets/": "yellow",
+"res://scenes/": "purple",
+"res://scripts/": "teal",
+"res://textures/": "red"
+}
+
 [input]
 
 ui_cancel={
@@ -78,7 +88,7 @@ de_hop={
 
 [physics]
 
-common/physics_ticks_per_second=120
+common/physics_ticks_per_second=144
 
 [rendering]
 

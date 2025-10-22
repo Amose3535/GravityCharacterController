@@ -15,7 +15,7 @@ class_name RotationComponent
 
 func _unhandled_input(event: InputEvent) -> void:
 	# Mouse rotation
-	if controller.view_mode == GravityController3D.ViewMode.FIRST_PERSON and controller.mouse_captured:
+	if controller.view_mode == GravityController3D.ViewMode.FIRST_PERSON and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		if event is InputEventMouseMotion:
 			_handle_mouse_rotation(event)
 

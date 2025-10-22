@@ -1,5 +1,4 @@
 # gravity_character_body_3d.gd
-@tool
 extends CharacterBody3D
 class_name GravityCharacter3D
 ## A base class that adds functionality and utilities on CharacterBody3D to have a neat integration with custom gravity vectors. 

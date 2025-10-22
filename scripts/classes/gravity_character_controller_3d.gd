@@ -4,43 +4,13 @@ class_name GravityController3D
 ## An implementation of GravityCharacter3D that supports rotation matching the gravity vector. And mouse / JoyPad rotation
 
 
-@export_group("Components")
+@export_group("Nodes")
 ## The head node. Can be a pivot for the camera and other nodes, the camera itself, or really anything that should be considered a "head"
 @export var head : Node3D = null
+## The collision shape. Not necessary but if provided can reduce computations needed by child nodes/component nodes
 @export var collision_shape : CollisionShape3D = null
 
-@export_group("Controls")
-## Toggle sprint or not
-@export var toggle_sprint : bool = false
-## Toggles on or off constant jump height
-@export var constant_jump : bool = false
-## Wether to auto capture mouse at start
-@export var auto_mouse_capture : bool = true
-## Toggles wether to buffer the jump input if pressed just before landing (jump queue).
-@export var jump_buffer_enabled : bool = true
-## The maximum time the jump input will be buffered for (e.g., 0.1 seconds).
-@export var jump_buffer_threshold : float = 0.1
-
-@export_group("Movement")
-## The initial vertical speed when jumping
-@export var jump_strength : float = 6.0
-## The movement speed of the player
-@export var speed: float = 8.0
-## The sprint multiplier
-@export var sprint_multiplier : float = 2.0
-## How fast you reach speed
-@export var accel: float = 45.0
-## How fast you stop
-@export var decel: float = 45.0
-
-
-@export_group("Settings")
-## Wether rotation around the vertical axis for the body of the player or the 
-@export var view_mode : ViewMode = ViewMode.FIRST_PERSON
-## The third person camera. Only used when GravityCharacter3D.view_mode is set to ViewMode.THIRD_PERSON
-@export var third_person_camera : Camera3D = null
-
-
+@export_group("Gravity related")
 ## The speed at which the body will rotate (with its feet DOWN) towards the desired direction
 @export var align_speed : float = 5.0
 ## Toggles cooldown for gravity direction changes
@@ -49,72 +19,24 @@ class_name GravityController3D
 @export var gravity_cooldown : float = 1.0
 
 
+
 ## Time passed since the last gravity change (used for cooldown).
 var last_gravity_change : float = 0.0
-
-## The state of the mouse
-var mouse_captured : bool = false
-## Wether was the jump button released or not
-var jumping : bool = false
-## Stores the remaining time for the jump input buffer (how long ago jump was pressed).
-var jump_buffer_timer : float = 0.0 
-## Wether the player is sprinting.
-var sprinting : bool = false
-## Enum for view mode
-enum ViewMode {
-	## In first person, the rotation of the body and the head is determined by the rotation axis (extracted via mouse or analog stick)
-	FIRST_PERSON,
-	## In third person, the rotation for the body and the head is determined by the movement direction
-	THIRD_PERSON
-}
-
-
-
 
 
 
 
 func _ready() -> void:
-	if auto_mouse_capture:
-		toggle_mouse_mode() # capture mouse
 	_setup_collision_shape()
-	if view_mode == ViewMode.THIRD_PERSON:
-		_setup_third_person()
 
 func _physics_process(delta: float) -> void:
-	# Jump related functions
-	_update_jump_buffer(delta)
-	_update_sprint_state()
-	_handle_jump()
-	
 	# Gravity related functions
 	_align_controller_with_gravity(delta)
 	_update_last_gravity_change(delta)
 	_apply_gravity(delta)
 	
-	# Movement related functions
-	_move_perpendicularly_to_gravity(delta)
-	
-	move_and_slide()
+	move_and_slide() # Move and slide function. Preferred over move_and_collide()
 
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey:
-		if event.is_action_pressed("ui_cancel"):
-			toggle_mouse_mode()
-
-func _on_gravity_changed(from: Vector3, to: Vector3) -> void:
-	pass
-
-
-#region CUSTOM FUNCTIONS
-
-func toggle_mouse_mode() -> void:
-	if mouse_captured:
-		mouse_captured = false
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	else:
-		mouse_captured = true
-		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func _setup_collision_shape() -> void:
 	# Setup collision_shape only if the collision_shape export parameter is missing
@@ -126,123 +48,7 @@ func _setup_collision_shape() -> void:
 				collision_shape = collision_shape_candidate
 				break
 
-func _setup_third_person() -> void:
-	if third_person_camera:
-		var forward_z = third_person_camera.global_transform.basis.z.normalized()
-		
-		var right_x = up_direction.cross(forward_z).normalized()
-		var forward = up_direction.cross(right_x).normalized()
-		
-		global_transform.basis = Basis(right_x, up_direction, -forward).orthonormalized()
-
-func _update_jump_buffer(delta: float) -> void:
-	if !jump_buffer_enabled:
-		jump_buffer_timer = 0.0 # Resetta se disabilitato
-		return
-	
-	# Se l'input è premuto O il timer è ancora attivo...
-	if Input.is_action_just_pressed("jump"):
-		# Inizializza il timer al massimo quando il tasto è premuto
-		jump_buffer_timer = jump_buffer_threshold
-	elif jump_buffer_timer > 0.0:
-		# Se l'input NON è premuto, ma il timer è attivo, decrementa
-		jump_buffer_timer -= delta
-
-func _move_perpendicularly_to_gravity(delta : float) -> void:
-	var move_dir = get_movement()
-	
-	var tangent: Vector3 = velocity - velocity.project(gravity_direction)
-	var target_tangent: Vector3 = (move_dir * speed * sprint_multiplier) if sprinting else (move_dir * speed)
-	var rate: float = accel if (move_dir.length() > 0.0) else decel
-	tangent = tangent.move_toward(target_tangent, rate * delta)
-	velocity = tangent + velocity.project(gravity_direction)
-
-func _update_sprint_state() -> void:
-	# 1. Gestione Hold (Tasto Premuto)
-	if !toggle_sprint:
-		sprinting = Input.is_action_pressed("sprint")
-		return
-	
-	# 2. Gestione Toggle (Cambio Stato)
-	if Input.is_action_just_pressed("sprint"):
-		# Inverti lo stato di sprint
-		sprinting = !sprinting
-	
-	# Aggiunta opzionale: Disattiva lo sprint in toggle se si rilascia il movimento
-	# Questo migliora la sensazione di gioco: lo sprint dovrebbe interrompersi quando ci si ferma.
-	var input_movement_active = get_input_vector().length_squared() > 0.05
-	if sprinting and !input_movement_active:
-		sprinting = false
-
-
-
-
-func _handle_third_person_rotation(delta : float) -> void:
-	# Rotazione in terza persona:
-	# 1. Corpo (Yaw) si allinea alla direzione del movimento.
-	# 2. Testa (Pitch) non si muove (o mantiene l'ultimo Pitch impostato).
-	
-	var movement_vector : Vector3 = get_movement()
-	
-	# Ruota il corpo solo se c'è un input di movimento significativo
-	if movement_vector.length_squared() > 0.05:
-		var target_basis : Basis = Basis.looking_at(movement_vector, up_direction)
-		
-		# Interpolazione lenta per una rotazione fluida (usiamo lo stesso align_speed)
-		#global_transform.basis = global_transform.basis.slerp(target_basis, align_speed * delta)
-
-
-
-func get_movement() -> Vector3:
-	# Get input Vector (on 2D plane perpendicular to y axis)
-	var input_dir : Vector2 = get_input_vector()
-	
-	var forward : Vector3 = -global_transform.basis.z
-	var right : Vector3 = global_transform.basis.x
-	
-	# Project onto plane orthogonal to gravity direction with length 1
-	forward = project_on_plane(forward, gravity_direction).normalized()
-	right = project_on_plane(right, gravity_direction).normalized()
-	
-	# Final movement direction
-	var move_dir : Vector3 = (forward * input_dir.y + right * input_dir.x)
-	if move_dir.length() > 1.0:
-		move_dir = move_dir.normalized()
-	
-	return move_dir
-
-func _handle_jump() -> void:
-	# Determina se il personaggio è a terra, usando la logica di ground detection attiva.
-	var is_currently_on_floor : bool = is_on_floor()
-	
-	var jump_requested : bool = Input.is_action_just_pressed("jump")
-	var jump_buffered : bool = jump_buffer_enabled and jump_buffer_timer > 0.0
-	var should_jump : bool = false
-	
-	# Condizione di Salto 1: Tasto premuto mentre si è a terra (Salto Immediato)
-	if jump_requested and is_currently_on_floor:
-		should_jump = true
-		
-	# Condizione di Salto 2: Buffer Attivo e Tocco a Terra (Salto in Coda)
-	# Dobbiamo evitare di eseguire il buffer se si è già saltato per l'Input Immediato.
-	elif jump_buffered and is_currently_on_floor:
-		should_jump = true
-		jump_buffer_timer = 0.0 # Consuma l'input nel buffer
-	
-	# Se l'input è premuto MA NON siamo a terra e il buffer è attivo, non facciamo nulla.
-	# Il timer decrementerà o è già stato impostato in _update_jump_buffer.
-	
-	if should_jump:
-		velocity += up_direction * jump_strength
-
-func get_input_vector() -> Vector2:
-	var input_dir = Vector2(
-	Input.get_axis("move_left","move_right"),
-	Input.get_axis("move_backward","move_forward")
-	)
-	return input_dir
-
-#region GRAVITY FUNCTIONS
+#region GRAVITY FUNCTIONS (CORE)
 ## Increments the last change of gravity by delta
 func _update_last_gravity_change(delta : float) -> void:
 	last_gravity_change += delta
@@ -299,28 +105,9 @@ func set_new_gravity_direction(new_dir: Vector3, force: bool = !gravity_change_c
 	return true
 
 func _apply_gravity(delta: float) -> void:
-	var grounded : bool = is_on_floor()
-	
 	# Not airborne
-	if grounded:
-		if jumping:
-			jumping = false
+	if is_on_floor():
 		return
-	
-	if !constant_jump:
-		if Input.is_action_pressed("jump"):
-			if !jumping:
-				jumping = true
-			velocity += gravity_direction * gravity * delta
-		else:
-			if jumping:
-				jumping = false
-			velocity += gravity_direction * 2*gravity * delta
-	else:
-		# Constant jump height: g * t
-		velocity += gravity_direction * 2*gravity * delta
+	# Constant jump height: g * t
+	velocity += gravity_direction * gravity * delta
 #endregion GRAVITY
-
-
-
-#endregion CUSTOM FUNCTIONS
