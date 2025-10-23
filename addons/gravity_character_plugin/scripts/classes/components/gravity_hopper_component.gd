@@ -13,8 +13,22 @@ class_name GravityHopperComponent
 @onready var gravity_hopper_raycast : RayCast3D = RayCast3D.new()
 
 func _ready() -> void:
-	if !CORRECT_SETUP: return
-	if !controller: return
+	_setup_gravity_hopper_raycast()
+	if !component_name or component_name == "":
+		component_name = "gravity_hopper_component"
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey:
+		if event.is_action_pressed("hop"):
+			#print("Distance: %f"%gravity_hop_range)
+			if gravity_hopper_raycast.get_collider() != null:
+				controller.set_new_gravity_direction(-gravity_hopper_raycast.get_collision_normal())
+				#print("Normal direction: %s"%get_collision_normal())
+		if event.is_action_pressed("de_hop"):
+			var default_gravity : Vector3 = ProjectSettings.get_setting("physics/3d/default_gravity_vector")
+			controller.set_new_gravity_direction(default_gravity)
+
+func _setup_gravity_hopper_raycast() -> void:
 	if !gravity_hopper_raycast:
 		gravity_hopper_raycast = RayCast3D.new()
 	if controller.head:
@@ -22,27 +36,9 @@ func _ready() -> void:
 		controller.head.add_child(gravity_hopper_raycast)
 		gravity_hopper_raycast.target_position = -controller.head.transform.basis.z * gravity_hop_range
 	else:
+		# Add the raycast as a child of controller and set target position
 		controller.add_child(gravity_hopper_raycast)
 		gravity_hopper_raycast.target_position = -controller.transform.basis.z * gravity_hop_range
 	
+	# Add controller to raycast exceptions
 	gravity_hopper_raycast.add_exception(controller)
-
-func _unhandled_input(event: InputEvent) -> void:
-	# If the setup is incorrect, return
-	if !CORRECT_SETUP: return
-	if _get_configuration_warnings().size() == 0:
-		if event is InputEventKey:
-			if event.is_action_pressed("hop"):
-				#print("Distance: %f"%gravity_hop_range)
-				if gravity_hopper_raycast.get_collider() != null:
-					controller.set_new_gravity_direction(-gravity_hopper_raycast.get_collision_normal())
-					#print("Normal direction: %s"%get_collision_normal())
-			if event.is_action_pressed("de_hop"):
-				var default_gravity : Vector3 = ProjectSettings.get_setting("physics/3d/default_gravity_vector")
-				controller.set_new_gravity_direction(default_gravity)
-
-func _get_configuration_warnings() -> PackedStringArray:
-	var warns : PackedStringArray = PackedStringArray([])
-	if !CORRECT_SETUP:
-		warns.append("The controller node of this GraivityHopperComponent isn't set up. Make sure to correctly set it up before trying to use it.")
-	return warns

@@ -1,5 +1,6 @@
 # component_state_machine.gd
-extends Node
+@tool
+extends StateMachine
 class_name ComponentStateMachine
 ## A StateMachine that handles the activation and deactivation of the states based on external conditions.
 ##
@@ -8,9 +9,13 @@ class_name ComponentStateMachine
 
 
 ## The controller (Just like in the components) should be a GravityCharacter3D. Which in the example scene is the player.
-@export var controller : GravityCharacter3D
-## Every state in the state machine. Each state has its own triggering conditions
-@export var states : Array[StateObject]
+@export var controller : GravityController3D
+## The list of all components that should NEVER be turned off. This is defined here and not in any State or state-derived class because this should be the unique source of truth for globally active components.
+@export var permanent_components : Array[String] = ["rotation_component","gravity_hopper_component","mouse_handler_component"]
 
-var previous_state : StateObject
-var current_state : StateObject
+
+## Functions that setups the controller variable if it's null
+func _setup_controller() -> void:
+	if controller: return
+	var parent: Node = get_parent()
+	if parent is GravityController3D: controller = parent

@@ -1,12 +1,11 @@
-[gd_scene load_steps=16 format=3 uid="uid://cn1of62gefhj"]
+[gd_scene load_steps=13 format=3 uid="uid://cn1of62gefhj"]
 
 [ext_resource type="Script" uid="uid://b1oj1tvs8wr20" path="res://addons/gravity_character_plugin/scripts/classes/gravity_character_controller_3d.gd" id="1_jqcdp"]
 [ext_resource type="Script" uid="uid://c7v4kj8ce2edy" path="res://addons/gravity_character_plugin/scripts/classes/components/gravity_hopper_component.gd" id="2_4n7h1"]
 [ext_resource type="Script" uid="uid://dumk1spdmner5" path="res://addons/gravity_character_plugin/scripts/classes/components/component_container.gd" id="2_6oeo6"]
 [ext_resource type="Script" uid="uid://bcmsamp4ux8r4" path="res://addons/gravity_character_plugin/scripts/classes/state_machine/components_state_machine.gd" id="2_teg1c"]
-[ext_resource type="Script" uid="uid://byy17nc3yqdrs" path="res://addons/gravity_character_plugin/scripts/classes/state_machine/state_object.gd" id="3_5i3x4"]
 [ext_resource type="Texture2D" uid="uid://bd3qwl2rf2iu6" path="res://addons/gravity_character_plugin/assets/textures/reticles/dot/dot.png" id="3_33pix"]
-[ext_resource type="Script" uid="uid://bniqp6e0ajq83" path="res://addons/gravity_character_plugin/scripts/classes/state_machine/state_activation_condition.gd" id="4_5i3x4"]
+[ext_resource type="Script" uid="uid://b4denh3wj1xmm" path="res://addons/gravity_character_plugin/scripts/classes/state_machine/states/state_player_idle.gd" id="3_hxx5n"]
 [ext_resource type="Script" uid="uid://bkqburwr7i3ua" path="res://addons/gravity_character_plugin/scripts/classes/components/rotation_component.gd" id="4_obqj8"]
 [ext_resource type="Script" uid="uid://dp5554hrflodi" path="res://addons/gravity_character_plugin/scripts/classes/components/jump_component.gd" id="5_rmeeg"]
 [ext_resource type="Script" uid="uid://dbwy1xcpyebf1" path="res://addons/gravity_character_plugin/scripts/classes/components/mouse_handler_component.gd" id="6_s8bxt"]
@@ -19,20 +18,6 @@ height = 1.8
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_jqcdp"]
 radius = 0.4
 height = 1.8
-
-[sub_resource type="Resource" id="Resource_8elau"]
-script = ExtResource("4_5i3x4")
-variable = "jump_time"
-operator = 4
-operand = [2.0]
-metadata/_custom_type_script = "uid://bniqp6e0ajq83"
-
-[sub_resource type="Resource" id="Resource_5i3x4"]
-script = ExtResource("3_5i3x4")
-state_name = ""
-activation_conditions = Array[ExtResource("4_5i3x4")]([SubResource("Resource_8elau")])
-component_map = []
-metadata/_custom_type_script = "uid://byy17nc3yqdrs"
 
 [node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("head", "collision_shape", "component_container")]
 script = ExtResource("1_jqcdp")
@@ -56,11 +41,18 @@ cull_mask = 524287
 current = true
 fov = 85.0
 
-[node name="ComponentStateMachine" type="Node" parent="." node_paths=PackedStringArray("controller")]
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("controller", "initial_state")]
 script = ExtResource("2_teg1c")
 controller = NodePath("..")
-states = Array[ExtResource("3_5i3x4")]([SubResource("Resource_5i3x4")])
+initial_state = NodePath("PlayerIdleState")
 metadata/_custom_type_script = "uid://bcmsamp4ux8r4"
+
+[node name="PlayerIdleState" type="Node" parent="StateMachine" node_paths=PackedStringArray("controller")]
+script = ExtResource("3_hxx5n")
+controller = NodePath("../..")
+active_components = Array[String](["jump_component", "walk_component"])
+state_name = "idle"
+metadata/_custom_type_script = "uid://b4denh3wj1xmm"
 
 [node name="Components" type="Node" parent="."]
 script = ExtResource("2_6oeo6")
@@ -81,6 +73,7 @@ texture = ExtResource("3_33pix")
 
 [node name="RotationComponent" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
 script = ExtResource("4_obqj8")
+component_name = "rotation_component"
 controller = NodePath("../..")
 metadata/_custom_type_script = "uid://bkqburwr7i3ua"
 
@@ -88,20 +81,24 @@ metadata/_custom_type_script = "uid://bkqburwr7i3ua"
 script = ExtResource("5_rmeeg")
 jump_strength = 9.0
 variable_jump_dampening = 1.2
+component_name = "jump_component"
 controller = NodePath("../..")
 metadata/_custom_type_script = "uid://dp5554hrflodi"
 
 [node name="MouseHandlerComponent" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
 script = ExtResource("6_s8bxt")
+component_name = "mouse_handler_component"
 controller = NodePath("../..")
 metadata/_custom_type_script = "uid://dbwy1xcpyebf1"
 
 [node name="MovementComponent" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
 script = ExtResource("7_rikgj")
+component_name = "walk_component"
 controller = NodePath("../..")
 metadata/_custom_type_script = "uid://cc5ywuhm56u55"
 
 [node name="GravityHopperComponent" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
 script = ExtResource("2_4n7h1")
+component_name = "gravity_hopper_component"
 controller = NodePath("../..")
 metadata/_custom_type_script = "uid://c7v4kj8ce2edy"

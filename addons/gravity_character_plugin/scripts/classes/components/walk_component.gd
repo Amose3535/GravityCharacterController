@@ -20,6 +20,10 @@ class_name WalkComponent
 var sprinting : bool = false
 
 
+func _ready() -> void:
+	if !component_name or component_name == "":
+		component_name = "walk_component"
+
 func _physics_process(delta: float) -> void:
 	# Movement related functions
 	_move_perpendicularly_to_gravity(delta)

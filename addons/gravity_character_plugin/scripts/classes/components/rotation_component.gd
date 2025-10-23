@@ -13,6 +13,10 @@ class_name RotationComponent
 @export_range(0.1, 89.9, 0.100) var max_vertical_angle : float = 89.9
 
 
+func _ready() -> void:
+	if !component_name or component_name == "":
+		component_name = "rotation_component"
+
 func _unhandled_input(event: InputEvent) -> void:
 	# Mouse rotation
 	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:

@@ -30,6 +30,19 @@ func _on_gravity_changed(old_direction : Vector3, new_direction : Vector3) -> vo
 	pass
 
 
+## API used to get the velocity component (with respect to the up_direction / -gravity_direction). It's reccomended to use a normalized vector
+func get_velocity_parallel(to : Vector3) -> Vector3:
+	return velocity.project(to) if !to.is_equal_approx(Vector3.ZERO) else Vector3.ZERO # dude, it's basically plain english lmao
+
+## API used to get the scalar of the velocity along the up_direction
+func get_vertical_velocity() -> float:
+	return get_velocity_parallel(up_direction).length()
+
+## API used to get the velocity component horizontal to the ground (and therefore pependicular to up_direction)
+func get_horizontal_velocity() -> Vector3:
+	return velocity - get_velocity_parallel(up_direction)
+
+
 ## API used from child script/components to project a vector v onto a plane with normal n.[br]This is commonly used to find the movement on walls and surfaces.
 static func project_on_plane(v: Vector3, n: Vector3) -> Vector3:
 	return v - n * v.dot(n)

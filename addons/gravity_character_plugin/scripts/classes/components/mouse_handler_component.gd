@@ -10,6 +10,8 @@ class_name MouseHandlerComponent
 var mouse_captured : bool = false
 
 func _ready() -> void:
+	if !component_name or component_name == "":
+		component_name = "mouse_handler_component"
 	if auto_mouse_capture:
 		toggle_mouse_mode() # capture mouse
 
