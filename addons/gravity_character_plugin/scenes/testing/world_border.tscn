@@ -1,0 +1,43 @@
+[gd_scene load_steps=8 format=3 uid="uid://c0pkg6kkag6rv"]
+
+[ext_resource type="Script" uid="uid://do7p0oytpjsxn" path="res://addons/gravity_character_plugin/scripts/scenes_scripts/world_border/world_border.gd" id="1_uixh0"]
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_ubs8g"]
+plane = Plane(0, 1, 0, 200)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_kr1g0"]
+plane = Plane(0, -1, 0, 200)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_6l1dp"]
+plane = Plane(1, 0, 0, 200)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_o8dmu"]
+plane = Plane(-1, 0, 0, 200)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_lappw"]
+plane = Plane(0, 0, 1, 200)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_hv70q"]
+plane = Plane(0, 0, -1, 200)
+
+[node name="world border" type="StaticBody3D"]
+script = ExtResource("1_uixh0")
+border_distance = 200.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("WorldBoundaryShape3D_ubs8g")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+shape = SubResource("WorldBoundaryShape3D_kr1g0")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="."]
+shape = SubResource("WorldBoundaryShape3D_6l1dp")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="."]
+shape = SubResource("WorldBoundaryShape3D_o8dmu")
+
+[node name="CollisionShape3D5" type="CollisionShape3D" parent="."]
+shape = SubResource("WorldBoundaryShape3D_lappw")
+
+[node name="CollisionShape3D6" type="CollisionShape3D" parent="."]
+shape = SubResource("WorldBoundaryShape3D_hv70q")

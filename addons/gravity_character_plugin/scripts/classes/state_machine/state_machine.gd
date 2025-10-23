@@ -19,27 +19,29 @@ var current_state : StateNode
 
 func _ready() -> void:
 	if Engine.is_editor_hint():
-		#editor only logic
+		# Editor only logic
 		return
-	
 	states = get_states() # Setup the states array
 	_connect_states_transition() # connect every state in "states" to _on_state_transitioned()
 	_enter_initial_state() # Finally enter the initial state if present
 
 func _process(delta: float) -> void:
 	if Engine.is_editor_hint():
-		#editor only logic
+		# editor only logic here
 		return
 	_process_states(delta)
 
 func _physics_process(delta: float) -> void:
 	if Engine.is_editor_hint():
-		#editor only logic
+		# editor only logic here
 		return
 	_physics_process_states(delta)
 
 ## Calls the _on_update() function in all states
 func _process_states(delta : float) -> void:
+	if Engine.is_editor_hint():
+		# editor only logic here
+		return
 	for state in states:
 		if state == current_state: # processes only the current active state
 			state._on_update(delta)
@@ -50,6 +52,9 @@ func _process_states(delta : float) -> void:
 
 ## Calls the _on_physics_update() function in all states
 func _physics_process_states(delta : float) -> void:
+	if Engine.is_editor_hint():
+		# editor only logic here
+		return
 	for state in states:
 		if state == current_state: # processes only the current active state
 			state._on_physics_update(delta)
@@ -72,10 +77,13 @@ func _on_state_transitioned(new_state_name, state) -> void:
 		print("Couldn't find a new state with name %s as a child of this FSM."%new_state_name)
 		return
 	
+	print("Exiting %s and entering %s"%[current_state.state_name, new_state.state_name])
 	# Call exit function on the current state
 	if current_state: current_state._on_exit()
 	# Call enter function on the previous state
 	new_state._on_enter()
+	# Assign new state to the current state
+	current_state = new_state
 
 ## Function that applies logic for initial state entering
 func _enter_initial_state() -> void:

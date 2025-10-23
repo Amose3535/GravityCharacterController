@@ -1,10 +1,9 @@
-[gd_scene load_steps=30 format=3 uid="uid://cne7ibwhdj7ar"]
+[gd_scene load_steps=29 format=3 uid="uid://cne7ibwhdj7ar"]
 
 [ext_resource type="Texture2D" uid="uid://btg5h87tbyfd8" path="res://addons/kenney_prototype_textures/red/texture_04.png" id="1_78l5s"]
 [ext_resource type="Texture2D" uid="uid://cw88hgr4bp2mx" path="res://addons/kenney_prototype_textures/green/texture_04.png" id="1_icpk1"]
 [ext_resource type="PackedScene" uid="uid://cn1of62gefhj" path="res://addons/gravity_character_plugin/scenes/player_scene/Player.tscn" id="2_78l5s"]
 [ext_resource type="Texture2D" uid="uid://daomw27ra75vj" path="res://addons/kenney_prototype_textures/orange/texture_04.png" id="3_4ayhu"]
-[ext_resource type="Script" uid="uid://do7p0oytpjsxn" path="res://addons/gravity_character_plugin/scripts/scenes_scripts/world_border/world_border.gd" id="4_kr1g0"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_78l5s"]
 custom_solver_bias = 0.065
@@ -78,22 +77,22 @@ material = SubResource("StandardMaterial3D_uo2kf")
 size = Vector3(50, 1, 50)
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_ubs8g"]
-plane = Plane(0, 1, 0, -50)
+plane = Plane(0, 1, 0, -60)
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_kr1g0"]
-plane = Plane(0, -1, 0, -50)
+plane = Plane(0, -1, 0, -60)
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_6l1dp"]
-plane = Plane(1, 0, 0, -50)
+plane = Plane(1, 0, 0, -60)
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_o8dmu"]
-plane = Plane(-1, 0, 0, -50)
+plane = Plane(-1, 0, 0, -60)
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_lappw"]
-plane = Plane(0, 0, 1, -50)
+plane = Plane(0, 0, 1, -60)
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_hv70q"]
-plane = Plane(0, 0, -1, -50)
+plane = Plane(0, 0, -1, -60)
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_x6lur"]
 sky_top_color = Color(0.332985, 0.512408, 0.801433, 1)
@@ -178,8 +177,6 @@ shape = SubResource("BoxShape3D_78l5s")
 mesh = SubResource("BoxMesh_8jxid")
 
 [node name="world border" type="StaticBody3D" parent="Objects"]
-script = ExtResource("4_kr1g0")
-border_distance = -0.1
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Objects/world border"]
 shape = SubResource("WorldBoundaryShape3D_ubs8g")
@@ -212,4 +209,8 @@ directional_shadow_blend_splits = true
 directional_shadow_pancake_size = 60.0
 
 [node name="Player" parent="." instance=ExtResource("2_78l5s")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.80018, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.40018, 0)
+align_speed = 5.0
+gravity_change_cooldown = false
+gravity_cooldown = 1.0
+gravity_direction = Vector3(0, -1, 0)

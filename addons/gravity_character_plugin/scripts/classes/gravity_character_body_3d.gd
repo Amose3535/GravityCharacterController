@@ -34,9 +34,13 @@ func _on_gravity_changed(old_direction : Vector3, new_direction : Vector3) -> vo
 func get_velocity_parallel(to : Vector3) -> Vector3:
 	return velocity.project(to) if !to.is_equal_approx(Vector3.ZERO) else Vector3.ZERO # dude, it's basically plain english lmao
 
+## API used to get the Vector of the velocity along the up_direction
+func get_vertical_velocity() -> Vector3:
+	return get_velocity_parallel(up_direction)
+
 ## API used to get the scalar of the velocity along the up_direction
-func get_vertical_velocity() -> float:
-	return get_velocity_parallel(up_direction).length()
+func get_vertical_velocity_scalar() -> float:
+	return velocity.dot(up_direction)
 
 ## API used to get the velocity component horizontal to the ground (and therefore pependicular to up_direction)
 func get_horizontal_velocity() -> Vector3:

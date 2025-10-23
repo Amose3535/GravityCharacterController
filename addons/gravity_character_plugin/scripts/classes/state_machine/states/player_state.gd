@@ -19,6 +19,9 @@ var components : Array[BaseComponent] = []:
 			components = components_candidates
 		return components
 
+func _on_enter() -> void:
+	_edit_components_state() # sets the necessary components to active and deactivates the rest
+
 ## The internal function used to toggle on active components and off inactive ones
 func _edit_components_state() -> void:
 	if !controller or !controller.component_container: return #Skips logic
