@@ -1,5 +1,6 @@
 extends BaseComponent
 class_name GravityHopperComponent
+## A class used to change a GravityCharacter3D's gravity to the direction you're looking using a raycast.
 
 @export_range(0.1,100,0.1,"or_greater") var gravity_hop_range : float = 100.0:
 	set(new_range):

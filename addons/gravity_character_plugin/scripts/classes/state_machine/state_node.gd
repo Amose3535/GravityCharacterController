@@ -1,4 +1,5 @@
 # state_node.gd
+@abstract
 extends Node
 class_name StateNode
 ## The object that contains info about this state: activation conditions, previous states, active components child of ComponentContainer.

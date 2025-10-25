@@ -1,4 +1,5 @@
 # player_state.gd
+@abstract
 extends StateNode
 class_name PlayerState
 ## PlayerState is a base class for all player-related states and contains important information such as the reference to the player_controller node (With base class of type GravityCharacter3D) and more coming in the future.

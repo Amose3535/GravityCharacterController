@@ -1,4 +1,5 @@
 # base_component.gd
+@abstract
 @icon("res://addons/gravity_character_plugin/assets/textures/icons/ComponentIcon.png")
 extends Node
 class_name BaseComponent
