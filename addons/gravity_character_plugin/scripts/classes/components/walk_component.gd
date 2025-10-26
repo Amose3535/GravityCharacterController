@@ -74,6 +74,7 @@ func get_movement() -> Vector3:
 	
 	return move_dir
 
+## Returns a Vector2 containing the horizontal input direction of the player.
 func get_input_vector() -> Vector2:
 	var input_dir = Vector2(
 	Input.get_axis("move_left","move_right"),

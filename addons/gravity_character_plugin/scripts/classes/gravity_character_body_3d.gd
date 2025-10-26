@@ -40,7 +40,8 @@ func get_vertical_velocity() -> Vector3:
 
 ## API used to get the scalar of the velocity along the up_direction
 func get_vertical_velocity_scalar() -> float:
-	return velocity.dot(up_direction)
+	#print(velocity.dot(up_direction))
+	return velocity.dot(up_direction) if !is_zero_approx((velocity.dot(up_direction))) else 0
 
 ## API used to get the velocity component horizontal to the ground (and therefore pependicular to up_direction)
 func get_horizontal_velocity() -> Vector3:

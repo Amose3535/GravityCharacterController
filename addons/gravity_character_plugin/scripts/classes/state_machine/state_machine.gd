@@ -1,4 +1,5 @@
 # state_machine.gd
+@icon("res://addons/gravity_character_plugin/assets/textures/icons/StateMachine.png")
 extends Node
 class_name StateMachine
 ##The base class for all state machines.
@@ -10,6 +11,9 @@ class_name StateMachine
 	set(new_state):
 		initial_state = new_state
 		current_state = initial_state
+
+@export_group("DEBUG")
+@export var debug_state_print : bool = false
 
 ## Every state in the state machine. Each state has its own triggering conditions
 var states : Array[StateNode]
@@ -77,7 +81,8 @@ func _on_state_transitioned(new_state_name, state) -> void:
 		print("Couldn't find a new state with name %s as a child of this FSM."%new_state_name)
 		return
 	
-	print("Exiting %s and entering %s"%[current_state.state_name, new_state.state_name])
+	if debug_state_print:
+		print("Exiting %s and entering %s"%[current_state.state_name, new_state.state_name])
 	# Call exit function on the current state
 	if current_state: current_state._on_exit()
 	# Call enter function on the previous state

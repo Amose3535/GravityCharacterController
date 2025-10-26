@@ -10,7 +10,8 @@ config_version=5
 
 [application]
 
-config/name="F/S_GJ-2025"
+config/name="GravityCharacterController"
+run/main_scene="uid://cne7ibwhdj7ar"
 config/features=PackedStringArray("4.5", "GL Compatibility")
 config/icon="res://icon.svg"
 

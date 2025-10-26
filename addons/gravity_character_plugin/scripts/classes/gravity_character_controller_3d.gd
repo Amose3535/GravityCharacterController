@@ -26,7 +26,7 @@ class_name GravityController3D
 var last_gravity_change : float = 0.0
 
 
-
+var last_ground_contact : float = 0
 
 func _ready() -> void:
 	_setup_collision_shape()
@@ -36,7 +36,7 @@ func _physics_process(delta: float) -> void:
 	_align_controller_with_gravity(delta)
 	_update_last_gravity_change(delta)
 	_apply_gravity(delta)
-	
+	#_debug_last_ground_contact(delta)
 	move_and_slide() # Move and slide function. Preferred over move_and_collide()
 
 
@@ -112,4 +112,21 @@ func _apply_gravity(delta: float) -> void:
 		return
 	# Constant jump height: g * t
 	velocity += gravity_direction * gravity * delta
+
+func _debug_last_ground_contact(delta : float) -> void:
+	if !is_on_floor():
+		last_ground_contact += delta
+		print(last_ground_contact)
+	else:
+		last_ground_contact = 0
 #endregion GRAVITY
+
+## A function that interfaces with the WalkComponent in the ComponentContainer node through the get_input_vector
+func get_input_vector_if_present() -> Vector2:
+	if !component_container: return Vector2.ZERO
+	var all_components = component_container.get_components()
+	var walk_component : WalkComponent = null
+	for component in all_components:
+		if component is WalkComponent:
+			walk_component = component
+	return walk_component.get_input_vector()

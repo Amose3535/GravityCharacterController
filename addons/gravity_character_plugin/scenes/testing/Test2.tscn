@@ -78,22 +78,22 @@ material = SubResource("StandardMaterial3D_uo2kf")
 size = Vector3(50, 1, 50)
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_ubs8g"]
-plane = Plane(0, 1, 0, -50)
+plane = Plane(0, 1, 0, -100)
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_kr1g0"]
-plane = Plane(0, -1, 0, -50)
+plane = Plane(0, -1, 0, -100)
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_6l1dp"]
-plane = Plane(1, 0, 0, -50)
+plane = Plane(1, 0, 0, -100)
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_o8dmu"]
-plane = Plane(-1, 0, 0, -50)
+plane = Plane(-1, 0, 0, -100)
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_lappw"]
-plane = Plane(0, 0, 1, -50)
+plane = Plane(0, 0, 1, -100)
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_hv70q"]
-plane = Plane(0, 0, -1, -50)
+plane = Plane(0, 0, -1, -100)
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_x6lur"]
 sky_top_color = Color(0.332985, 0.512408, 0.801433, 1)
@@ -179,7 +179,7 @@ mesh = SubResource("BoxMesh_8jxid")
 
 [node name="world border" type="StaticBody3D" parent="Objects"]
 script = ExtResource("4_kr1g0")
-border_distance = -0.1
+border_distance = -100.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Objects/world border"]
 shape = SubResource("WorldBoundaryShape3D_ubs8g")
