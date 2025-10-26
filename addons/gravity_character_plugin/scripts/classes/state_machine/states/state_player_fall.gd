@@ -8,15 +8,16 @@ func _ready() -> void:
 
 func _on_update(delta : float) -> void:
 	# If the velocity vector is near to zero and is on floor, then transition to idle
-	if controller.velocity.is_equal_approx(Vector3.ZERO) and controller.is_on_floor():
-		transitioned.emit("idle", self)
-		return
-	
-	# If the horizontal component of the velocity vector is greater than zero and on flooor, then transition to walk
-	if !controller.get_horizontal_velocity().is_equal_approx(Vector3.ZERO) and controller.is_on_floor():
-		transitioned.emit("walk", self)
-		return
-	
-	if controller.is_on_wall():
-		transitioned.emit("on_wall", self)
-		return
+	if controller.is_on_floor():
+		if controller.velocity.is_equal_approx(Vector3.ZERO):
+			transitioned.emit("idle", self)
+			return
+		
+		if !controller.get_horizontal_velocity().is_equal_approx(Vector3.ZERO):
+			transitioned.emit("walk", self)
+			return
+	else:
+		if controller.is_on_wall():
+			if controller.get_vertical_velocity_scalar() < 0:
+				transitioned.emit("on_wall", self)
+				return

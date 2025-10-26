@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://cne7ibwhdj7ar"]
+[gd_scene load_steps=32 format=3 uid="uid://cne7ibwhdj7ar"]
 
 [ext_resource type="Texture2D" uid="uid://btg5h87tbyfd8" path="res://addons/kenney_prototype_textures/red/texture_04.png" id="1_78l5s"]
 [ext_resource type="Texture2D" uid="uid://cw88hgr4bp2mx" path="res://addons/kenney_prototype_textures/green/texture_04.png" id="1_icpk1"]
@@ -76,6 +76,14 @@ uv1_world_triplanar = true
 [sub_resource type="BoxMesh" id="BoxMesh_8jxid"]
 material = SubResource("StandardMaterial3D_uo2kf")
 size = Vector3(50, 1, 50)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kr1g0"]
+custom_solver_bias = 0.065
+size = Vector3(5, 1, 5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_6l1dp"]
+material = SubResource("StandardMaterial3D_uo2kf")
+size = Vector3(5, 1, 5)
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_ubs8g"]
 plane = Plane(0, 1, 0, -100)
@@ -177,9 +185,27 @@ shape = SubResource("BoxShape3D_78l5s")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Objects/Walls/FloorObject8"]
 mesh = SubResource("BoxMesh_8jxid")
 
+[node name="FloorObject9" type="StaticBody3D" parent="Objects/Walls"]
+transform = Transform3D(-5.73206e-15, 4.37114e-08, 1, 1, 1.31134e-07, 0, -1.31134e-07, 1, -4.37114e-08, 0, -27, -7)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Objects/Walls/FloorObject9"]
+shape = SubResource("BoxShape3D_kr1g0")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Objects/Walls/FloorObject9"]
+mesh = SubResource("BoxMesh_6l1dp")
+
+[node name="FloorObject10" type="StaticBody3D" parent="Objects/Walls"]
+transform = Transform3D(-5.73206e-15, 4.37114e-08, 1, 1, 1.31134e-07, 0, -1.31134e-07, 1, -4.37114e-08, 0, -27, 7)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Objects/Walls/FloorObject10"]
+shape = SubResource("BoxShape3D_kr1g0")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Objects/Walls/FloorObject10"]
+mesh = SubResource("BoxMesh_6l1dp")
+
 [node name="world border" type="StaticBody3D" parent="Objects"]
 script = ExtResource("4_kr1g0")
-border_distance = -100.0
+border_distance = -0.1
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Objects/world border"]
 shape = SubResource("WorldBoundaryShape3D_ubs8g")

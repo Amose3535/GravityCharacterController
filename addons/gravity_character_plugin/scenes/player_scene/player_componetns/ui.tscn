@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://dlpsp7hpr3kcu"]
+
+[ext_resource type="Script" uid="uid://dfrli263jquek" path="res://addons/gravity_character_plugin/scripts/scenes_scripts/ui.gd" id="1_3poj1"]
+[ext_resource type="Texture2D" uid="uid://bd3qwl2rf2iu6" path="res://addons/gravity_character_plugin/assets/textures/reticles/dot/dot.png" id="1_cct1q"]
+
+[node name="UI" type="CanvasLayer"]
+script = ExtResource("1_3poj1")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="CenterContainer"]
+layout_mode = 2
+texture = ExtResource("1_cct1q")
+
+[node name="State" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0

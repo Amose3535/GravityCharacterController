@@ -6,7 +6,7 @@ class_name WallSlideComponent
 # Velocità massima di scivolamento sul muro
 @export var wall_slide_speed: float = 5.0 # Un valore 3D tipico è intorno a 5.0
 
-# Forza adesiva laterale per "incollare" il personaggio al muro
+## How fast does your vertical speed change when 
 @export var wall_stick_force: float = 10.0 
 
 
@@ -17,10 +17,9 @@ func _apply_wall_slide(delta: float):
 	
 	# Condition: on wall and not on floor
 	if controller.is_on_wall() and not controller.is_on_floor():
-		print("WALLSLIDING")
-		var velocity = controller.velocity
-		var lateral_velocity = velocity
-		var gravity_direction = controller.gravity_direction
+		#print("WALLSLIDING")
+		var velocity := controller.velocity
+		var lateral_velocity := velocity
 	
 		# --- 1. CLAMPING (Limitazione) della Velocità di Caduta ---
 		
@@ -28,15 +27,14 @@ func _apply_wall_slide(delta: float):
 		# Se > 0, il personaggio sta cadendo/muovendosi verso la gravità.
 		var current_downward_speed = -controller.get_vertical_velocity_scalar()
 		# VEC-TORE: Calcola la VEC-TORE attuale della caduta
-		var downward_velocity_vector = gravity_direction * current_downward_speed
+		var downward_velocity_vector = controller.gravity_direction * current_downward_speed
 		# VEC-TORE: Calcola la VEC-TORE clampata (la nuova velocità di scivolamento)
-		var clamped_downward_velocity_vector = gravity_direction * wall_slide_speed
+		var clamped_downward_velocity_vector = controller.gravity_direction * wall_slide_speed
 		
 		# Se il personaggio sta cadendo E la sua velocità supera il limite di slide...
 		if current_downward_speed > wall_slide_speed:
 			# Aggiorna la velocity: Sottrai la vecchia componente di caduta e aggiungi la nuova (limitata)
-			velocity -= downward_velocity_vector
-			velocity += clamped_downward_velocity_vector
+			velocity += clamped_downward_velocity_vector - downward_velocity_vector
 	
 		# --- 2. FORZA ADESIVA LATERALE (per non staccarsi) ---
 		
@@ -46,7 +44,7 @@ func _apply_wall_slide(delta: float):
 		# Calcola la velocità laterale (proiezione della velocity sul piano perpendicolare a gravity_direction)
 		lateral_velocity = velocity - (downward_velocity_vector+clamped_downward_velocity_vector)
 		
-		# Smorza (damp) la velocità laterale
+		# SLinear interpolate 
 		velocity = lerp(velocity, velocity - lateral_velocity, wall_stick_force * delta)
 		
 		# Imposta la nuova velocity

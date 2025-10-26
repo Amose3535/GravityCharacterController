@@ -130,3 +130,11 @@ func get_input_vector_if_present() -> Vector2:
 		if component is WalkComponent:
 			walk_component = component
 	return walk_component.get_input_vector()
+
+func get_statemachine_if_present() -> ComponentStateMachine:
+	var children = get_children()
+	var ret_child : ComponentStateMachine = null
+	for child in children:
+		if child is ComponentStateMachine:
+			ret_child = child 
+	return ret_child
