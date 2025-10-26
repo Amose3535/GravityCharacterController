@@ -17,7 +17,7 @@ class_name ComponentStateMachine
 		return controller
 
 ## The list of all components that should NEVER be turned off. This is defined here and not in any State or state-derived class because this should be the unique source of truth for globally active components.
-@export var permanent_components : Array[String] = ["rotation_component","gravity_hopper_component","mouse_handler_component"]
+@export var permanent_components : Array[String] = []
 
 
 func _process(delta: float) -> void:

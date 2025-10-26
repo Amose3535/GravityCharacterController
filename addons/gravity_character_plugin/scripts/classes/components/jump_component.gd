@@ -15,6 +15,10 @@ class_name JumpComponent
 ## Stores the remaining time for the jump input buffer (how long ago jump was pressed).
 var jump_buffer_timer : float = 0.0 
 
+func _ready() -> void:
+	if !component_name or component_name == "":
+		component_name = "jump_component"
+
 func _physics_process(delta: float) -> void:
 	# Jump related functions
 	_update_jump_buffer(delta)

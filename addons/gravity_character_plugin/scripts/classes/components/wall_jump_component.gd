@@ -1,103 +1,105 @@
+# wall_jump_component.gd
 extends BaseComponent
 class_name WallJumpComponent
-## A Component that allows the character to push off a vertical surface (wall jump).
+## A component that applies an horizontal and vertical impulse upon input when the player is on a wall.
 
 #region EXPORTS
 @export_group("Wall Jump")
-## Horizontal strength applied away from the wall.
+## Horizontal force applied from the wall.
 @export var push_strength_horizontal: float = 8.0 
-## Vertical strength applied upwards during the jump.
+## Vertical force applied during the pushing
 @export var push_strength_vertical: float = 6.0 
-## Distance the side raycasts extend to detect a wall.
-@export var wall_check_distance: float = 0.35
-## Time (in seconds) the character must wait between wall jumps (to prevent spam).
+## Radius of wall detection for push strength
+@export var wall_check_radius_margin: float = 0.1 
+## How many wall contacts there can be at one time
+@export var max_wall_contacts : int = 8
+## Time (in seconds) between possible wall jumps.
 @export var wall_jump_cooldown: float = 0.5 
 #endregion EXPORTS
 
 #region VARIABLES
-## RayCast used to detect the wall on the left side.
-var left_raycast: RayCast3D = null
-## RayCast used to detect the wall on the right side.
-var right_raycast: RayCast3D = null
-## Timer to track the time until the next wall jump is allowed.
+## ShapeCast used for wall(s) detection
+@onready var wall_check_shape_cast: ShapeCast3D = ShapeCast3D.new()
+## Cooldown timer (able to jump when timer<= 0)
 var cooldown_timer: float = 0.0
 #endregion VARIABLES
 
 func _ready() -> void:
-	if Engine.is_editor_hint(): return
-	
-	_setup_wall_raycasts()
-	# Assicurati che WallJumpComponent si avvii disattivo se la FSM lo gestisce
-	#if component_name != "": # Assume che se ha un nome, la FSM lo gestirà
-		#active = false
+	_setup_shape_cast()
+	if !component_name or component_name == "":
+		component_name = "wall_jump_component"
 
 func _physics_process(delta: float) -> void:
-	# Aggiorna il cooldown
-	if cooldown_timer > 0.0:
-		cooldown_timer -= delta
-	
+	_update_cooldown_timer(delta)
 	_handle_wall_jump()
 
-## Configura e aggiunge i RayCast al nodo Head (o al Controller) per il rilevamento del muro.
-func _setup_wall_raycasts() -> void:
-	var ray_container = controller.head if controller.head else controller
+## Configure ShapeCast and add it to the controller.
+func _setup_shape_cast() -> void:
+	# Create new shapecast, add it to the controller and configure it
+	if !wall_check_shape_cast: wall_check_shape_cast = ShapeCast3D.new() # Create new shapecast when necessary
+	controller.add_child.call_deferred(wall_check_shape_cast) # Add new shapecast to controller (but do it deferredly to prevent problems)
+	wall_check_shape_cast.position = controller.collision_shape.position # Set its position relative to the controller to the same position as the collision shape
+	wall_check_shape_cast.add_exception(controller) # Add as shapecast exception the controller
 	
-	# La posizione iniziale dei RayCast deve essere a livello del centro del corpo
-	var ray_start_position = Vector3.ZERO 
+	var sphere_shape = SphereShape3D.new()
+	var base_radius = _get_player_radius()
+	sphere_shape.radius = base_radius + wall_check_radius_margin
 	
-	# Crea RayCast Sinistro
-	left_raycast = RayCast3D.new()
-	left_raycast.name = "WallCheckLeft"
-	ray_container.add_child(left_raycast)
-	left_raycast.add_exception(controller)
-	
-	# Crea RayCast Destro
-	right_raycast = RayCast3D.new()
-	right_raycast.name = "WallCheckRight"
-	ray_container.add_child(right_raycast)
-	right_raycast.add_exception(controller)
-	
-	# Imposta l'orientamento: puntano in avanti, ma sono spostati ai lati
-	# L'orientamento sarà gestito dalla rotazione del nodo Head
-	left_raycast.position = ray_start_position
-	right_raycast.position = ray_start_position
-	
-	# Il target punta in avanti
-	left_raycast.target_position = Vector3(0, 0, -wall_check_distance) 
-	right_raycast.target_position = Vector3(0, 0, -wall_check_distance)
+	wall_check_shape_cast.shape = sphere_shape
+	wall_check_shape_cast.target_position = Vector3.ZERO
+	wall_check_shape_cast.enabled = true
+	wall_check_shape_cast.max_results = max_wall_contacts
 
-## Controlla le condizioni e applica il Wall Jump se l'input è attivo.
+## Compute the radius based on the shape of the controller
+func _get_player_radius() -> float:
+	if controller.collision_shape and controller.collision_shape.shape:
+		var shape = controller.collision_shape.shape
+		if shape.has_method("get_radius"):
+			return shape.get_radius() # get_radius() is in CylinderShape3D, CapsueShape3D and SphereShape3D
+		if shape is BoxShape3D:
+			# Half of the biggest side
+			return max((shape as BoxShape3D).size.x, (shape as BoxShape3D).size.z) / 2.0
+			
+	return 0.5 # Fallback
+
+## Control conditions and apply walljump
 func _handle_wall_jump() -> void:
-	# Condizioni base: non a terra, cooldown non attivo, input salto premuto
-	if controller.is_on_floor() || cooldown_timer > 0.0 || !Input.is_action_just_pressed("jump"):
-		return
-		
-	var is_colliding_left = left_raycast.is_colliding()
-	var is_colliding_right = right_raycast.is_colliding()
+	if !is_inside_tree(): return
+	# Return if on floor, if the timer hasn't expired yet or if the player didn't press the jump input
+	if controller.is_on_floor() || cooldown_timer > 0.0 || !Input.is_action_just_pressed("jump"): return
 	
-	if is_colliding_left || is_colliding_right:
-		var collision_normal: Vector3
-		
-		# 1. Trova la normale del muro (usiamo la normale del RayCast che ha colpito)
-		if is_colliding_left:
-			collision_normal = left_raycast.get_collision_normal()
-		elif is_colliding_right:
-			collision_normal = right_raycast.get_collision_normal()
-		
-		# 2. Calcola lo spinta finale:
-		
-		# A) Spinta Orizzontale: Lontano dal muro (lungo la normale)
-		var horizontal_push: Vector3 = collision_normal.normalized() * push_strength_horizontal
-		
-		# B) Spinta Verticale: Verso l'alto (lungo up_direction)
-		var vertical_push: Vector3 = controller.up_direction * push_strength_vertical
-		
-		# 3. Applica la nuova velocity al controller:
-		
-		# Azzeriamo la velocity corrente per un salto pulito, mantenendo solo la nuova spinta.
-		controller.velocity = horizontal_push + vertical_push
-		
-		# 4. Attiva il cooldown
-		cooldown_timer = wall_jump_cooldown
-		
-		# [TODO: Emetti segnale 'wall_jumped' qui]
+	# Update right before use
+	wall_check_shape_cast.force_shapecast_update() 
+	
+	# Condizioni di attivazione: Sei in aria E vicino a un muro
+	if !wall_check_shape_cast.is_colliding(): return
+	
+	# Get collision count, and if 0, return
+	var collision_count : int = wall_check_shape_cast.get_collision_count()
+	if collision_count == 0: return
+	
+	# Use a contribution o all normals
+	var resulting_normal : Vector3 = Vector3.ZERO
+	for i in range(collision_count):
+		# Add to the resulting vector the contribution of all possible contact points (from i=0 to i=max_wall_contacts)
+		resulting_normal += wall_check_shape_cast.get_collision_normal(i)
+	
+	# Make sure that the resulting normal isn't too steep (check with controller.floor_max_angle)
+	if abs(resulting_normal.dot(controller.up_direction)) > cos(deg_to_rad(controller.floor_max_angle)): return
+	
+	# Compute horizontal component (along contribution normal)
+	var horizontal_push: Vector3 = resulting_normal.normalized() * push_strength_horizontal
+	
+	# Compute vertical component (along up_direction)
+	var vertical_push: Vector3 = controller.up_direction * push_strength_vertical
+	
+	# Apply new velocity
+	controller.velocity += horizontal_push + vertical_push
+	
+	# restart cooldown
+	cooldown_timer = wall_jump_cooldown
+
+## Updates the timer when it's > 0
+func _update_cooldown_timer(delta : float) -> void:
+	if cooldown_timer > 0.0:
+		cooldown_timer -= delta

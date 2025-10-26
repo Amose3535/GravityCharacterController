@@ -15,4 +15,5 @@ func _physics_process(delta: float) -> void:
 func _dampen_fall(delta : float) -> void:
 	if Input.is_action_pressed("jump") and !controller.is_on_floor():
 		#print("DAMPENING FALL")
-		controller.velocity -= (controller.gravity_direction * controller.gravity * delta)/variable_jump_dampening # A variable_jump_dampening fraction of the formula for gravity is dampened
+		if controller.get_vertical_velocity_scalar() > 0:
+			controller.velocity -= (controller.gravity_direction * controller.gravity * delta)/variable_jump_dampening # A variable_jump_dampening fraction of the formula for gravity is dampened

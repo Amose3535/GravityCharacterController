@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://cn1of62gefhj"]
+[gd_scene load_steps=22 format=3 uid="uid://cn1of62gefhj"]
 
 [ext_resource type="Script" uid="uid://b1oj1tvs8wr20" path="res://addons/gravity_character_plugin/scripts/classes/gravity_character_controller_3d.gd" id="1_jqcdp"]
 [ext_resource type="Script" uid="uid://c7v4kj8ce2edy" path="res://addons/gravity_character_plugin/scripts/classes/components/gravity_hopper_component.gd" id="2_4n7h1"]
@@ -16,13 +16,16 @@
 [ext_resource type="Script" uid="uid://cc5ywuhm56u55" path="res://addons/gravity_character_plugin/scripts/classes/components/walk_component.gd" id="7_rikgj"]
 [ext_resource type="Script" uid="uid://dlpk3ux6syknj" path="res://addons/gravity_character_plugin/scripts/classes/components/fall_dampener_component.gd" id="11_okuww"]
 [ext_resource type="Script" uid="uid://c1lcso5c0uxvq" path="res://addons/gravity_character_plugin/scripts/classes/components/wall_slide_component.gd" id="15_8iiej"]
+[ext_resource type="Script" uid="uid://dnqtylbfxr2v8" path="res://addons/gravity_character_plugin/scripts/classes/components/wall_jump_component.gd" id="17_g5f5o"]
+[ext_resource type="Script" uid="uid://c7h64nkak1vab" path="res://addons/gravity_character_plugin/scripts/classes/components/wall_stick_component.gd" id="18_osg2b"]
+[ext_resource type="Script" uid="uid://cvfxbvuty0x7e" path="res://addons/gravity_character_plugin/scripts/classes/components/health_component.gd" id="19_3a5w6"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4n7h1"]
-radius = 0.7
+radius = 0.65
 height = 1.8
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_jqcdp"]
-radius = 0.4
+radius = 0.49
 height = 1.8
 
 [node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("head", "collision_shape", "component_container")]
@@ -36,6 +39,7 @@ metadata/_custom_type_script = "uid://b1oj1tvs8wr20"
 [node name="UI" parent="." instance=ExtResource("2_myhax")]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.015106022, 0, -0.0073192716)
 shape = SubResource("CapsuleShape3D_4n7h1")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
@@ -45,7 +49,7 @@ mesh = SubResource("CapsuleMesh_jqcdp")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Head"]
-transform = Transform3D(1, 0, 0, 0, 0.9848077, 0.17364818, 0, -0.17364818, 0.9848077, 0, 0.5, 0.8)
+transform = Transform3D(1, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0)
 cull_mask = 524287
 current = true
 fov = 85.0
@@ -53,6 +57,7 @@ fov = 85.0
 [node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("controller", "initial_state")]
 script = ExtResource("2_teg1c")
 controller = NodePath("..")
+permanent_components = Array[String](["rotation_component", "gravity_hopper_component", "mouse_handler_component"])
 initial_state = NodePath("PlayerIdleState")
 metadata/_custom_type_script = "uid://bcmsamp4ux8r4"
 
@@ -87,7 +92,7 @@ metadata/_custom_type_script = "uid://cuelm8q14frqh"
 [node name="PlayerOnWallState" type="Node" parent="StateMachine" node_paths=PackedStringArray("controller")]
 script = ExtResource("7_myhax")
 controller = NodePath("../..")
-active_components = Array[String](["wall_slide_component", "walk_component"])
+active_components = Array[String](["wall_slide_component", "wall_stick_component", "wall_jump_component", "walk_component"])
 state_name = "on_wall"
 metadata/_custom_type_script = "uid://jlv5cnovoax8"
 
@@ -95,15 +100,29 @@ metadata/_custom_type_script = "uid://jlv5cnovoax8"
 script = ExtResource("2_6oeo6")
 metadata/_custom_type_script = "uid://dumk1spdmner5"
 
-[node name="RotationComponent" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
+[node name="[P]RotationComponent" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
 script = ExtResource("4_obqj8")
-component_name = "rotation_component"
 controller = NodePath("../..")
 metadata/_custom_type_script = "uid://bkqburwr7i3ua"
 
+[node name="[P]GravityHopperComponent" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
+script = ExtResource("2_4n7h1")
+controller = NodePath("../..")
+metadata/_custom_type_script = "uid://c7v4kj8ce2edy"
+
+[node name="[P]MouseHandlerComponent" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
+script = ExtResource("6_s8bxt")
+controller = NodePath("../..")
+metadata/_custom_type_script = "uid://dbwy1xcpyebf1"
+
+[node name="[P]HealthComponent" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
+script = ExtResource("19_3a5w6")
+controller = NodePath("../..")
+metadata/_custom_type_script = "uid://cvfxbvuty0x7e"
+
 [node name="JumpComponent" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
 script = ExtResource("5_rmeeg")
-jump_strength = 9.0
+jump_strength = 12.0
 jump_buffer_threshold = 0.2
 component_name = "jump_component"
 controller = NodePath("../..")
@@ -115,28 +134,32 @@ component_name = "fall_dampener_component"
 controller = NodePath("../..")
 metadata/_custom_type_script = "uid://dlpk3ux6syknj"
 
-[node name="MouseHandlerComponent" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
-script = ExtResource("6_s8bxt")
-component_name = "mouse_handler_component"
-controller = NodePath("../..")
-metadata/_custom_type_script = "uid://dbwy1xcpyebf1"
-
 [node name="WalkComponent" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
 script = ExtResource("7_rikgj")
 component_name = "walk_component"
 controller = NodePath("../..")
 metadata/_custom_type_script = "uid://cc5ywuhm56u55"
 
-[node name="GravityHopperComponent" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
-script = ExtResource("2_4n7h1")
-component_name = "gravity_hopper_component"
-controller = NodePath("../..")
-metadata/_custom_type_script = "uid://c7v4kj8ce2edy"
-
 [node name="WallSlideComponent" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
 script = ExtResource("15_8iiej")
-wall_slide_speed = 3.0
+wall_slide_speed = 0.0
 wall_stick_force = 15.0
 component_name = "wall_slide_component"
 controller = NodePath("../..")
 metadata/_custom_type_script = "uid://c1lcso5c0uxvq"
+
+[node name="WallJumpComponent" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
+script = ExtResource("17_g5f5o")
+push_strength_horizontal = 20.0
+push_strength_vertical = 16.0
+wall_check_radius_margin = 0.05
+component_name = "wall_jump_component"
+controller = NodePath("../..")
+metadata/_custom_type_script = "uid://dnqtylbfxr2v8"
+
+[node name="WallStickComponent" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
+script = ExtResource("18_osg2b")
+stick_force = 2.0
+component_name = "wall_stick_component"
+controller = NodePath("../..")
+metadata/_custom_type_script = "uid://c7h64nkak1vab"

@@ -29,7 +29,4 @@ func _edit_components_state() -> void:
 	var parent : Node = get_parent()
 	if !(parent is ComponentStateMachine): return # Skips logic
 	for component in components:
-		component.active = \
-		(component.component_name in (parent as ComponentStateMachine).permanent_components) \
-		or \
-		(component.component_name in active_components)
+		component.active = (component.component_name == "") or (component.component_name in active_components)

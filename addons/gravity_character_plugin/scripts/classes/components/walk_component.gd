@@ -52,13 +52,13 @@ func _update_sprint_state() -> void:
 	
 	# Aggiunta opzionale: Disattiva lo sprint in toggle se si rilascia il movimento
 	# Questo migliora la sensazione di gioco: lo sprint dovrebbe interrompersi quando ci si ferma.
-	var input_movement_active = get_input_vector().length_squared() > 0.05
+	var input_movement_active = controller.get_input_vector().length_squared() > 0.05
 	if sprinting and !input_movement_active:
 		sprinting = false
 
 func get_movement() -> Vector3:
 	# Get input Vector (on 2D plane perpendicular to y axis)
-	var input_dir : Vector2 = get_input_vector()
+	var input_dir : Vector2 = controller.get_input_vector()
 	
 	var forward : Vector3 = -controller.global_transform.basis.z
 	var right : Vector3 = controller.global_transform.basis.x
@@ -73,11 +73,3 @@ func get_movement() -> Vector3:
 		move_dir = move_dir.normalized()
 	
 	return move_dir
-
-## Returns a Vector2 containing the horizontal input direction of the player.
-func get_input_vector() -> Vector2:
-	var input_dir = Vector2(
-	Input.get_axis("move_left","move_right"),
-	Input.get_axis("move_backward","move_forward")
-	)
-	return input_dir

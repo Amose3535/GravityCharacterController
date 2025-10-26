@@ -15,8 +15,6 @@ class_name GravityHopperComponent
 
 func _ready() -> void:
 	_setup_gravity_hopper_raycast()
-	if !component_name or component_name == "":
-		component_name = "gravity_hopper_component"
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey:
@@ -30,8 +28,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			controller.set_new_gravity_direction(default_gravity)
 
 func _setup_gravity_hopper_raycast() -> void:
-	if !gravity_hopper_raycast:
-		gravity_hopper_raycast = RayCast3D.new()
+	if !gravity_hopper_raycast: gravity_hopper_raycast = RayCast3D.new()
 	if controller.head:
 		# Add the raycast as a child of the head and set target position
 		controller.head.add_child(gravity_hopper_raycast)

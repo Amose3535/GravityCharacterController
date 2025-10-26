@@ -121,15 +121,13 @@ func _debug_last_ground_contact(delta : float) -> void:
 		last_ground_contact = 0
 #endregion GRAVITY
 
-## A function that interfaces with the WalkComponent in the ComponentContainer node through the get_input_vector
-func get_input_vector_if_present() -> Vector2:
-	if !component_container: return Vector2.ZERO
-	var all_components = component_container.get_components()
-	var walk_component : WalkComponent = null
-	for component in all_components:
-		if component is WalkComponent:
-			walk_component = component
-	return walk_component.get_input_vector()
+## Returns a Vector2 containing the horizontal input direction of the player.
+func get_input_vector() -> Vector2:
+	var input_dir = Vector2(
+	Input.get_axis("move_left","move_right"),
+	Input.get_axis("move_backward","move_forward")
+	)
+	return input_dir
 
 func get_statemachine_if_present() -> ComponentStateMachine:
 	var children = get_children()
