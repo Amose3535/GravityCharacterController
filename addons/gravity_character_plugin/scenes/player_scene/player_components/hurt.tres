@@ -1,0 +1,11 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cmvh8e15vbcgi"]
+
+[ext_resource type="Shader" uid="uid://b4uv6guklex8q" path="res://addons/gravity_character_plugin/scenes/player_scene/player_components/hurt.gdshader" id="1_4lhbg"]
+
+[resource]
+shader = ExtResource("1_4lhbg")
+shader_parameter/flash_color = Color(1, 0, 0, 1)
+shader_parameter/intensity = 1.0
+shader_parameter/edge_power = 2.5
+shader_parameter/inner_ratio = 0.75
+shader_parameter/feather = 0.4

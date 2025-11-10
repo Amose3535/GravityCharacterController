@@ -18,6 +18,11 @@ class_name ComponentStateMachine
 
 ## The list of all components that should NEVER be turned off. This is defined here and not in any State or state-derived class because this should be the unique source of truth for globally active components.
 @export var permanent_components : Array[String] = []
+## Wether the state machien should be enabled or not
+@export var enabled : bool = true:
+	set(new_state):
+		enabled = new_state
+		process_mode = Node.PROCESS_MODE_INHERIT if new_state else Node.PROCESS_MODE_DISABLED
 
 
 func _process(delta: float) -> void:
@@ -35,10 +40,10 @@ func _update_states_controller() -> void:
 			if !player_state.controller:
 				player_state.controller = controller
 
-func get_player_states() -> Array[PlayerState]:
+func get_player_states() -> Array[ComponentState]:
 	var states : Array[StateNode] = get_states()
-	var player_states : Array[PlayerState] = []
+	var player_states : Array[ComponentState] = []
 	for state in states:
-		if (state is PlayerState):
+		if (state is ComponentState):
 			player_states.append(state)
 	return player_states

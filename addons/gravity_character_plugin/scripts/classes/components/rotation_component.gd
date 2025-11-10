@@ -11,36 +11,52 @@ class_name RotationComponent
 @export_range(0.0, 1.0, 0.0001) var mouse_sensitivity_y : float = 0.002
 ## Maximum vertical angle for the head rotation (in degrees)
 @export_range(0.1, 89.9, 0.100) var max_vertical_angle : float = 89.9
+## Enable / Disable strafe tilt
+@export var strafe_tilt_enabled: bool = true
+## Determines how much can the head tilt from the rest position to left/right
+@export var max_stilt_angle: float = 3.5
+## Determines how fast does the head tilt to its desired angle
+@export var stilt_speed: float = 3.5
+
+
+## The relative mouse rotation. Updated at every input and reset to 0 at every physics frame
+var rotation: Vector2 = Vector2.ZERO
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	# Mouse rotation
 	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		if event is InputEventMouseMotion:
-			_handle_mouse_rotation(event)
+			rotation.y = -event.relative.y * mouse_sensitivity_y
+			rotation.x = -event.relative.x * mouse_sensitivity_x
+
+func _physics_process(delta: float) -> void:
+	_update_strafe_tilt(delta)
+	_handle_mouse_rotation(delta)
+
+func _update_strafe_tilt(delta: float) -> void:
+	if !controller || !controller.head || !strafe_tilt_enabled: return
+	var target_angle = max_stilt_angle*get_strafing_axis()
+	controller.head.rotation_degrees.z = lerp(controller.head.rotation_degrees.z, target_angle, delta*stilt_speed)
 
 
-func _handle_mouse_rotation(event: InputEventMouseMotion) -> void:
+func _handle_mouse_rotation(delta: float) -> void:
 	# Early return for incorrect setup
 	if !CORRECT_SETUP: return
-	# 1. Rotazione del Corpo (Yaw) - Attorno all'asse UP (Pitch fisso)
-	# Ruota il CharacterBody3D attorno al suo asse UP (-gravity_direction)
-	var yaw_angle : float = -event.relative.x * mouse_sensitivity_x
+	# Get desired yaw (L/R)
+	var yaw_angle : float = rotation.x * delta
+	# Get pitch angle (U/D)
+	var pitch_angle : float = controller.head.rotation.x + (rotation.y * delta)
+	# Limit pitch angle
+	pitch_angle = clamp(pitch_angle, -deg_to_rad(max_vertical_angle), deg_to_rad(max_vertical_angle))
 	
-	# Applichiamo la rotazione usando l'asse UP (gravità)
-	# Nota: L'uso di global_transform.basis.rotated() è robusto con la gravità
+	# Apply yaw rotation using up vector
 	controller.global_transform.basis = controller.global_transform.basis.rotated(controller.up_direction, yaw_angle)
+	# Apply pitch rotation
+	controller.head.rotation.x = pitch_angle
 	
-	# 2. Rotazione della Testa (Pitch) - Guardare su/giù
-	# Ruota il nodo head attorno al suo asse X locale.
-	var pitch_angle : float = -event.relative.y * mouse_sensitivity_y
-	
-	# Calcoliamo la rotazione finale desiderata
-	var new_pitch : float = controller.head.rotation.x + pitch_angle
-	
-	# Limitiamo la rotazione (in radianti)
-	var max_angle_rad : float = deg_to_rad(max_vertical_angle)
-	new_pitch = clamp(new_pitch, -max_angle_rad, max_angle_rad)
-	
-	# Applichiamo la rotazione alla testa/camera (solo sull'asse X)
-	controller.head.rotation.x = new_pitch
+	# After using the rotation vector, flush it so that it doesn't keep rotating after an initial input
+	rotation = Vector2.ZERO
+
+func get_strafing_axis() -> float:
+	return Input.get_axis("move_right", "move_left")

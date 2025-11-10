@@ -124,8 +124,6 @@ sky = SubResource("Sky_78l5s")
 
 [node name="FloorObject2" type="StaticBody3D" parent="Objects/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -30, 0)
-collision_layer = 2
-collision_mask = 3
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Objects/Walls/FloorObject2"]
 shape = SubResource("BoxShape3D_78l5s")
@@ -135,8 +133,6 @@ mesh = SubResource("BoxMesh_k6foc")
 
 [node name="FloorObject5" type="StaticBody3D" parent="Objects/Walls"]
 transform = Transform3D(-1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 0, 1, 0, 30, 0)
-collision_layer = 2
-collision_mask = 3
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Objects/Walls/FloorObject5"]
 shape = SubResource("BoxShape3D_78l5s")
@@ -146,8 +142,6 @@ mesh = SubResource("BoxMesh_uo2kf")
 
 [node name="FloorObject3" type="StaticBody3D" parent="Objects/Walls"]
 transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, -30, 0, 0)
-collision_layer = 2
-collision_mask = 3
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Objects/Walls/FloorObject3"]
 shape = SubResource("BoxShape3D_78l5s")
@@ -157,8 +151,6 @@ mesh = SubResource("BoxMesh_tcjey")
 
 [node name="FloorObject4" type="StaticBody3D" parent="Objects/Walls"]
 transform = Transform3D(1.31134e-07, -1, 0, 1, 1.31134e-07, 0, 0, 0, 1, 0, 0, 0)
-collision_layer = 2
-collision_mask = 3
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Objects/Walls/FloorObject4"]
 shape = SubResource("BoxShape3D_x6lur")
@@ -168,8 +160,6 @@ mesh = SubResource("BoxMesh_4ayhu")
 
 [node name="FloorObject6" type="StaticBody3D" parent="Objects/Walls"]
 transform = Transform3D(1.31134e-07, -1, 0, 1, 1.31134e-07, 0, 0, 0, 1, 30, 0, 0)
-collision_layer = 2
-collision_mask = 3
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Objects/Walls/FloorObject6"]
 shape = SubResource("BoxShape3D_78l5s")
@@ -179,8 +169,6 @@ mesh = SubResource("BoxMesh_k48of")
 
 [node name="FloorObject7" type="StaticBody3D" parent="Objects/Walls"]
 transform = Transform3D(-5.73206e-15, 4.37114e-08, 1, 1, 1.31134e-07, 0, -1.31134e-07, 1, -4.37114e-08, 0, 0, 30)
-collision_layer = 2
-collision_mask = 3
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Objects/Walls/FloorObject7"]
 shape = SubResource("BoxShape3D_78l5s")
@@ -190,8 +178,6 @@ mesh = SubResource("BoxMesh_8jxid")
 
 [node name="FloorObject8" type="StaticBody3D" parent="Objects/Walls"]
 transform = Transform3D(-5.73206e-15, 4.37114e-08, 1, 1, 1.31134e-07, 0, -1.31134e-07, 1, -4.37114e-08, 0, 0, -30)
-collision_layer = 2
-collision_mask = 3
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Objects/Walls/FloorObject8"]
 shape = SubResource("BoxShape3D_78l5s")
@@ -201,8 +187,6 @@ mesh = SubResource("BoxMesh_8jxid")
 
 [node name="FloorObject9" type="StaticBody3D" parent="Objects/Walls"]
 transform = Transform3D(-5.73206e-15, 4.37114e-08, 1, 1, 1.31134e-07, 0, -1.31134e-07, 1, -4.37114e-08, 0, -27, -7)
-collision_layer = 2
-collision_mask = 3
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Objects/Walls/FloorObject9"]
 shape = SubResource("BoxShape3D_kr1g0")
@@ -221,7 +205,7 @@ mesh = SubResource("BoxMesh_6l1dp")
 
 [node name="world border" type="StaticBody3D" parent="Objects"]
 script = ExtResource("4_kr1g0")
-border_distance = -100.0
+border_distance = -0.1
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Objects/world border"]
 shape = SubResource("WorldBoundaryShape3D_ubs8g")
@@ -246,11 +230,12 @@ environment = SubResource("Environment_icpk1")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.918805, 0.197356, 0.34183, -0.17628, -0.569689, 0.802732, 0.353161, -0.797812, -0.488644, 0, 0, 0)
-light_angular_distance = 2.0
 shadow_enabled = true
+directional_shadow_split_1 = 0.3
+directional_shadow_split_2 = 0.6
+directional_shadow_split_3 = 1.0
 directional_shadow_blend_splits = true
-directional_shadow_max_distance = 110.0
-directional_shadow_pancake_size = 70.0
+directional_shadow_pancake_size = 60.0
 
 [node name="Player" parent="." instance=ExtResource("2_78l5s")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 31.4, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.80018, 0)

@@ -1,5 +1,5 @@
 # state_player_on_wall.gd
-extends PlayerState
+extends ComponentState
 class_name PlayerOnWallState
 ## The class that represents the OnWall state in the FSM. Like all State nodes, it must be a direct child of the FSM node.
 ##
@@ -20,7 +20,9 @@ func _on_update(delta : float) -> void:
 			return
 	else:
 		if controller.is_on_wall():
-			pass
+			if Input.is_action_pressed("dash"):
+				transitioned.emit("dash", self)
+				return
 		else:
 			if controller.get_vertical_velocity_scalar() > 0:
 				transitioned.emit("jump", self)

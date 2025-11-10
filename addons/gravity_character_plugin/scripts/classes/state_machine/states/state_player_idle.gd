@@ -1,5 +1,5 @@
 # state_player_idle.gd
-extends PlayerState
+extends ComponentState
 class_name PlayerIdleState
 ## The class that represents the idle state in the FSM. Like all State nodes, it must be a direct child of the FSM node.
 
@@ -21,5 +21,4 @@ func _on_update(delta : float) -> void:
 			if controller.get_vertical_velocity_scalar() < 0:
 				transitioned.emit("fall", self)
 				return
-	
 	

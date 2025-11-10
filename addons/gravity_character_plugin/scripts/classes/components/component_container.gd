@@ -66,6 +66,19 @@ func get_components() -> Array[BaseComponent]:
 			ret_arr.append(child)
 	return ret_arr
 
+## API to get a component by its name if it has one
+func get_component_by_name(component_name : String) -> BaseComponent:
+	var all_components : Array[BaseComponent] = get_components()
+	for component in all_components:
+		if component.component_name == component_name:
+			return component
+	## Fallback in case no component was found earlier
+	for component in all_components:
+		if component.name == component_name:
+			return component
+	## Final fallback
+	return get_components()[0]
+
 # ==============================================================================
 # EDITOR WARNINGS
 # ==============================================================================

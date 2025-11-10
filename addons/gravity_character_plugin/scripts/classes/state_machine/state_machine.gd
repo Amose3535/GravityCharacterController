@@ -4,7 +4,7 @@ extends Node
 class_name StateMachine
 ##The base class for all state machines.
 
-
+signal state_changed(from: StateNode, to: StateNode)
 
 ## The initial state of the StateMachine
 @export var initial_state : StateNode = null:
@@ -18,7 +18,10 @@ class_name StateMachine
 ## Every state in the state machine. Each state has its own triggering conditions
 var states : Array[StateNode]
 ## The current state of the StateMachine
-var current_state : StateNode
+var current_state : StateNode:
+	set(new_state):
+		state_changed.emit(current_state, new_state)
+		current_state = new_state
 
 
 func _ready() -> void:
@@ -111,5 +114,12 @@ func get_state_by_name(state_name : String, case_sensitive : bool) -> StateNode:
 	for state in states:
 		var comparison_name : String = state.state_name if case_sensitive else state.state_name.to_lower()
 		if name_to_be_checked == comparison_name:
+			return state
+	return null
+
+func get_state_by_class(name_of_class : String) -> StateNode:
+	var class_to_check : String = name_of_class 
+	for state in states:
+		if state.is_class(name_of_class):
 			return state
 	return null

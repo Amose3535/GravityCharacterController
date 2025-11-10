@@ -1,0 +1,148 @@
+[gd_scene load_steps=12 format=3 uid="uid://dlpsp7hpr3kcu"]
+
+[ext_resource type="Script" uid="uid://bm6osf1gedyv" path="res://addons/gravity_character_plugin/scenes/player_scene/player_components/ui.gd" id="1_3poj1"]
+[ext_resource type="Texture2D" uid="uid://bd3qwl2rf2iu6" path="res://addons/gravity_character_plugin/assets/textures/reticles/dot/dot.png" id="1_cct1q"]
+[ext_resource type="Texture2D" uid="uid://pc1giwj8bpgq" path="res://addons/kenney_prototype_textures/dark/texture_07.png" id="2_15yuj"]
+[ext_resource type="Material" uid="uid://cmvh8e15vbcgi" path="res://addons/gravity_character_plugin/scenes/player_scene/player_components/hurt.tres" id="2_hjt2b"]
+[ext_resource type="Texture2D" uid="uid://24v5x4tqy5y0" path="res://addons/kenney_prototype_textures/purple/texture_08.png" id="4_ddi86"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hjt2b"]
+atlas = ExtResource("2_15yuj")
+region = Rect2(2, 2, 203.11725, 26.391754)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_15yuj"]
+load_path = "res://.godot/imported/texture_08.png-add0c08e78cde6ad4eaac64e7b9a9204.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i4606"]
+atlas = SubResource("CompressedTexture2D_15yuj")
+region = Rect2(2, 2, 203.11725, 26.391754)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_kt7x8"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dml3y"]
+atlas = SubResource("CompressedTexture2D_kt7x8")
+region = Rect2(2, 2, 203.117, 5)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gajvh"]
+atlas = ExtResource("4_ddi86")
+region = Rect2(2, 2, 203.117, 5)
+
+[node name="UI" type="CanvasLayer"]
+process_mode = 3
+follow_viewport_enabled = true
+script = ExtResource("1_3poj1")
+
+[node name="HUD" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="LowHealth" type="ColorRect" parent="HUD"]
+visible = false
+material = ExtResource("2_hjt2b")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HurtOverlay" type="ColorRect" parent="HUD"]
+visible = false
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0, 0, 0.19607843)
+
+[node name="MarginContainer" type="MarginContainer" parent="HUD"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/separation = 0
+
+[node name="HealthBar" type="TextureProgressBar" parent="HUD/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+step = 0.01
+value = 100.0
+texture_under = SubResource("AtlasTexture_hjt2b")
+texture_progress = SubResource("AtlasTexture_i4606")
+
+[node name="EnergyBar" type="TextureProgressBar" parent="HUD/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+step = 0.01
+value = 100.0
+texture_under = SubResource("AtlasTexture_dml3y")
+texture_progress = SubResource("AtlasTexture_gajvh")
+
+[node name="DashBar" type="TextureProgressBar" parent="HUD/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+step = 0.1
+value = 100.0
+fill_mode = 3
+tint_under = Color(1, 0, 0.06666667, 1)
+tint_over = Color(1, 0.6627451, 0.3882353, 1)
+tint_progress = Color(1, 1, 0, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="HUD/MarginContainer"]
+layout_mode = 2
+
+[node name="Dot" type="TextureRect" parent="HUD/MarginContainer/CenterContainer"]
+layout_mode = 2
+texture = ExtResource("1_cct1q")
+
+[node name="State" type="Label" parent="HUD"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -23.0
+offset_right = 40.0
+grow_vertical = 0
+
+[node name="FPS" type="Label" parent="HUD"]
+layout_mode = 1
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="Speed" type="Label" parent="HUD"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 23.0
+grow_horizontal = 0
+horizontal_alignment = 3
+
+[node name="PauseMenu" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

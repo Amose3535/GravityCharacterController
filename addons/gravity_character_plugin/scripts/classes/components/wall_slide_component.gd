@@ -7,7 +7,7 @@ class_name WallSlideComponent
 @export var wall_slide_speed: float = 5.0 # Un valore 3D tipico è intorno a 5.0
 
 ## How fast does your vertical speed change when 
-@export var wall_stick_force: float = 10.0 
+@export var wall_friction_force: float = 10.0
 
 
 func _physics_process(delta: float) -> void:
@@ -44,8 +44,8 @@ func _apply_wall_slide(delta: float):
 		# Calcola la velocità laterale (proiezione della velocity sul piano perpendicolare a gravity_direction)
 		lateral_velocity = velocity - (downward_velocity_vector+clamped_downward_velocity_vector)
 		
-		# SLinear interpolate 
-		velocity = lerp(velocity, velocity - lateral_velocity, wall_stick_force * delta)
+		# Linear interpolate 
+		velocity = lerp(velocity, velocity - lateral_velocity, wall_friction_force * delta)
 		
 		# Imposta la nuova velocity
 		controller.velocity = velocity

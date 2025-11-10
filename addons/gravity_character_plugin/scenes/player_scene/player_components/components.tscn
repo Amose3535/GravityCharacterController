@@ -1,0 +1,48 @@
+[gd_scene load_steps=8 format=3 uid="uid://cxy6r2u0xwvks"]
+
+[ext_resource type="Script" uid="uid://dumk1spdmner5" path="res://addons/gravity_character_plugin/scripts/classes/components/component_container.gd" id="1_3ctfg"]
+[ext_resource type="Texture2D" uid="uid://bd3qwl2rf2iu6" path="res://addons/gravity_character_plugin/assets/textures/reticles/dot/dot.png" id="2_5ej0k"]
+[ext_resource type="Script" uid="uid://bkqburwr7i3ua" path="res://addons/gravity_character_plugin/scripts/classes/components/rotation_component.gd" id="3_4rril"]
+[ext_resource type="Script" uid="uid://dp5554hrflodi" path="res://addons/gravity_character_plugin/scripts/classes/components/jump_component.gd" id="4_b03m6"]
+[ext_resource type="Script" uid="uid://dbwy1xcpyebf1" path="res://addons/gravity_character_plugin/scripts/classes/components/mouse_handler_component.gd" id="5_4lvob"]
+[ext_resource type="Script" uid="uid://cc5ywuhm56u55" path="res://addons/gravity_character_plugin/scripts/classes/components/walk_component.gd" id="6_40b1n"]
+[ext_resource type="Script" uid="uid://c7v4kj8ce2edy" path="res://addons/gravity_character_plugin/scripts/classes/components/gravity_hopper_component.gd" id="7_26by3"]
+
+[node name="Components" type="Node"]
+script = ExtResource("1_3ctfg")
+metadata/_custom_type_script = "uid://dumk1spdmner5"
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="CenterContainer" type="CenterContainer" parent="UI"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="UI/CenterContainer"]
+layout_mode = 2
+texture = ExtResource("2_5ej0k")
+
+[node name="RotationComponent" type="Node" parent="."]
+script = ExtResource("3_4rril")
+metadata/_custom_type_script = "uid://bkqburwr7i3ua"
+
+[node name="JumpComponent" type="Node" parent="."]
+script = ExtResource("4_b03m6")
+jump_strength = 9.0
+variable_jump_dampening = 1.2
+metadata/_custom_type_script = "uid://dp5554hrflodi"
+
+[node name="MouseHandlerComponent" type="Node" parent="."]
+script = ExtResource("5_4lvob")
+metadata/_custom_type_script = "uid://dbwy1xcpyebf1"
+
+[node name="MovementComponent" type="Node" parent="."]
+script = ExtResource("6_40b1n")
+metadata/_custom_type_script = "uid://cc5ywuhm56u55"
+
+[node name="GravityHopperComponent" type="Node" parent="."]
+script = ExtResource("7_26by3")
+metadata/_custom_type_script = "uid://c7v4kj8ce2edy"

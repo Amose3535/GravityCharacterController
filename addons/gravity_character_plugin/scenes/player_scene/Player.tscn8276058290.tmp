@@ -1,10 +1,11 @@
-[gd_scene load_steps=28 format=3 uid="uid://cn1of62gefhj"]
+[gd_scene load_steps=39 format=3 uid="uid://cn1of62gefhj"]
 
 [ext_resource type="Script" uid="uid://b1oj1tvs8wr20" path="res://addons/gravity_character_plugin/scripts/classes/gravity_character_controller_3d.gd" id="1_jqcdp"]
 [ext_resource type="Script" uid="uid://c7v4kj8ce2edy" path="res://addons/gravity_character_plugin/scripts/classes/components/gravity_hopper_component.gd" id="2_4n7h1"]
 [ext_resource type="Script" uid="uid://dumk1spdmner5" path="res://addons/gravity_character_plugin/scripts/classes/components/component_container.gd" id="2_6oeo6"]
 [ext_resource type="PackedScene" uid="uid://dlpsp7hpr3kcu" path="res://addons/gravity_character_plugin/scenes/player_scene/player_components/ui.tscn" id="2_myhax"]
 [ext_resource type="Script" uid="uid://bcmsamp4ux8r4" path="res://addons/gravity_character_plugin/scripts/classes/state_machine/components_state_machine.gd" id="2_teg1c"]
+[ext_resource type="PackedScene" uid="uid://dxonaynw0m5wn" path="res://addons/gravity_character_plugin/scenes/player_scene/player_components/distortion_effect.tscn" id="3_4ryn3"]
 [ext_resource type="Script" uid="uid://b4denh3wj1xmm" path="res://addons/gravity_character_plugin/scripts/classes/state_machine/states/state_player_idle.gd" id="3_hxx5n"]
 [ext_resource type="Script" uid="uid://bkqburwr7i3ua" path="res://addons/gravity_character_plugin/scripts/classes/components/rotation_component.gd" id="4_obqj8"]
 [ext_resource type="Script" uid="uid://db8p1ewxx0cke" path="res://addons/gravity_character_plugin/scripts/classes/state_machine/states/state_player_fall.gd" id="4_ukkgi"]
@@ -12,18 +13,26 @@
 [ext_resource type="Script" uid="uid://dp5554hrflodi" path="res://addons/gravity_character_plugin/scripts/classes/components/jump_component.gd" id="5_rmeeg"]
 [ext_resource type="Script" uid="uid://cuelm8q14frqh" path="res://addons/gravity_character_plugin/scripts/classes/state_machine/states/state_player_walk.gd" id="6_8iiej"]
 [ext_resource type="Script" uid="uid://dbwy1xcpyebf1" path="res://addons/gravity_character_plugin/scripts/classes/components/mouse_handler_component.gd" id="6_s8bxt"]
+[ext_resource type="Script" uid="uid://cfs28riswyejx" path="res://addons/godot_material_footsteps/resources/material_footstep.gd" id="6_ypo82"]
 [ext_resource type="Script" uid="uid://jlv5cnovoax8" path="res://addons/gravity_character_plugin/scripts/classes/state_machine/states/state_player_on_wall.gd" id="7_myhax"]
 [ext_resource type="Script" uid="uid://cc5ywuhm56u55" path="res://addons/gravity_character_plugin/scripts/classes/components/walk_component.gd" id="7_rikgj"]
-[ext_resource type="Script" path="res://addons/gravity_character_plugin/scripts/classes/state_machine/states/state_player_dash.gd" id="9_lnm8g"]
+[ext_resource type="AudioStream" uid="uid://crwgrjtg5nva0" path="res://assets/audios/sfx/step/step_randomizer.tres" id="7_tx1x4"]
+[ext_resource type="AudioStream" uid="uid://b3d7jeyr5sy3m" path="res://assets/audios/sfx/land2/land2_randomizer.tres" id="8_tx1x4"]
+[ext_resource type="Script" uid="uid://efhg0ybd12d7" path="res://addons/ImmersiveAudio/scripts/ImmersiveAudioPlayer3D.gd" id="9_31uyh"]
+[ext_resource type="Script" uid="uid://dybvvvjfhb355" path="res://addons/gravity_character_plugin/scripts/classes/state_machine/states/state_player_dash.gd" id="9_lnm8g"]
 [ext_resource type="Script" uid="uid://dlpk3ux6syknj" path="res://addons/gravity_character_plugin/scripts/classes/components/fall_dampener_component.gd" id="11_okuww"]
+[ext_resource type="Script" uid="uid://4ih084ggff8u" path="res://addons/gravity_character_plugin/scripts/classes/components/interaction_component.gd" id="13_2fquo"]
 [ext_resource type="Script" uid="uid://c1lcso5c0uxvq" path="res://addons/gravity_character_plugin/scripts/classes/components/wall_slide_component.gd" id="15_8iiej"]
+[ext_resource type="Script" uid="uid://te10d6hw1psx" path="res://addons/gravity_character_plugin/scripts/classes/components/fov_changer_component.gd" id="16_lfvkv"]
 [ext_resource type="Script" uid="uid://dnqtylbfxr2v8" path="res://addons/gravity_character_plugin/scripts/classes/components/wall_jump_component.gd" id="17_g5f5o"]
 [ext_resource type="Script" uid="uid://c7h64nkak1vab" path="res://addons/gravity_character_plugin/scripts/classes/components/wall_stick_component.gd" id="18_osg2b"]
 [ext_resource type="Script" uid="uid://cvfxbvuty0x7e" path="res://addons/gravity_character_plugin/scripts/classes/components/health_component.gd" id="19_3a5w6"]
 [ext_resource type="Script" uid="uid://ct3vq8mkdffb5" path="res://addons/gravity_character_plugin/scripts/classes/abilities/puff.gd" id="20_2ngqp"]
-[ext_resource type="Script" path="res://addons/gravity_character_plugin/scripts/classes/components/dash_component.gd" id="22_0jq7x"]
-[ext_resource type="Script" path="res://addons/gravity_character_plugin/scripts/classes/components/abilities_component.gd" id="25_ib4kq"]
+[ext_resource type="Script" uid="uid://kw6iksxlfd4b" path="res://addons/gravity_character_plugin/scripts/classes/components/dash_component.gd" id="22_0jq7x"]
+[ext_resource type="Script" uid="uid://ca4cc4qw8y26o" path="res://addons/gravity_character_plugin/scripts/classes/components/abilities_component.gd" id="25_ib4kq"]
 [ext_resource type="Script" uid="uid://ddb67pt5rwmk4" path="res://addons/gravity_character_plugin/scripts/classes/abilities/base_ability.gd" id="26_2ngqp"]
+[ext_resource type="Script" uid="uid://jy4sym0dop3s" path="res://addons/godot_material_footsteps/core/material_footstep_player_3d.gd" id="29_y5brc"]
+[ext_resource type="Script" uid="uid://l275e75mnoow" path="res://addons/ImmersiveAudio/scripts/ImmersiveAudioListener3D.gd" id="32_tx1x4"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4n7h1"]
 radius = 0.55
@@ -32,6 +41,16 @@ height = 1.8
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_jqcdp"]
 radius = 0.4
 height = 1.8
+
+[sub_resource type="Resource" id="Resource_tx1x4"]
+script = ExtResource("6_ypo82")
+material_name = "grass"
+metadata/_custom_type_script = "uid://cfs28riswyejx"
+
+[sub_resource type="Resource" id="Resource_31uyh"]
+script = ExtResource("6_ypo82")
+material_name = "sand"
+metadata/_custom_type_script = "uid://cfs28riswyejx"
 
 [sub_resource type="Resource" id="Resource_gi26b"]
 script = ExtResource("20_2ngqp")
@@ -73,10 +92,36 @@ cull_mask = 1048573
 current = true
 fov = 85.0
 
+[node name="DistortionEffect" parent="Head/Camera3D" instance=ExtResource("3_4ryn3")]
+
+[node name="ImmersiveListener3D" type="AudioListener3D" parent="Head/Camera3D"]
+script = ExtResource("32_tx1x4")
+metadata/_custom_type_script = "uid://l275e75mnoow"
+
+[node name="MaterialFootstepPlayer3D" type="RayCast3D" parent="." node_paths=PackedStringArray("character", "audio_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.39999998, 0)
+collision_mask = 10
+script = ExtResource("29_y5brc")
+character = NodePath("..")
+material_footstep_sound_map = Array[ExtResource("6_ypo82")]([SubResource("Resource_tx1x4"), SubResource("Resource_31uyh")])
+audio_player = NodePath("ImmersiveAudioPlayer3D")
+accepted_meta_data_names = PackedStringArray()
+default_material_footstep_movement_sound = ExtResource("7_tx1x4")
+default_material_footstep_landing_sound = ExtResource("8_tx1x4")
+character_max_speed = 20.0
+debug = false
+metadata/_custom_type_script = "uid://jy4sym0dop3s"
+
+[node name="ImmersiveAudioPlayer3D" type="AudioStreamPlayer3D" parent="MaterialFootstepPlayer3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.367849, 0)
+script = ExtResource("9_31uyh")
+upper_hemisphere_only = true
+metadata/_custom_type_script = "uid://efhg0ybd12d7"
+
 [node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("controller", "initial_state")]
 script = ExtResource("2_teg1c")
-permanent_components = Array[String](["rotation_component", "gravity_hopper_component", "mouse_handler_component"])
 controller = NodePath("..")
+permanent_components = Array[String](["rotation_component", "gravity_hopper_component", "mouse_handler_component"])
 initial_state = NodePath("PlayerIdleState")
 metadata/_custom_type_script = "uid://bcmsamp4ux8r4"
 
@@ -120,15 +165,26 @@ script = ExtResource("9_lnm8g")
 controller = NodePath("../..")
 active_components = Array[String](["dash_component", "jump_component", "wall_stick_component", "#movement_component"])
 state_name = "dash"
+metadata/_custom_type_script = "uid://dybvvvjfhb355"
 
 [node name="Components" type="Node" parent="."]
 script = ExtResource("2_6oeo6")
 metadata/_custom_type_script = "uid://dumk1spdmner5"
 
+[node name="[P]CameraEffects" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
+script = ExtResource("16_lfvkv")
+max_fov_increase = 35.0
+fov_change_speed = 12.0
+speed_threshold = 16.0
+use_full_vel = false
+max_speed_for_distortion = 85.0
+controller = NodePath("../..")
+metadata/_custom_type_script = "uid://te10d6hw1psx"
+
 [node name="[P]GravityHopperComponent" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
 script = ExtResource("2_4n7h1")
 changeable = true
-gravity_change_mask = 3
+gravity_change_mask = 10
 active = false
 controller = NodePath("../..")
 metadata/_custom_type_script = "uid://c7v4kj8ce2edy"
@@ -137,6 +193,12 @@ metadata/_custom_type_script = "uid://c7v4kj8ce2edy"
 script = ExtResource("19_3a5w6")
 controller = NodePath("../..")
 metadata/_custom_type_script = "uid://cvfxbvuty0x7e"
+
+[node name="[P]InteractionComponent" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
+script = ExtResource("13_2fquo")
+intaraction_mask = 130
+controller = NodePath("../..")
+metadata/_custom_type_script = "uid://4ih084ggff8u"
 
 [node name="[P]MouseHandlerComponent" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
 script = ExtResource("6_s8bxt")
@@ -157,6 +219,7 @@ metadata/_custom_type_script = "uid://bkqburwr7i3ua"
 script = ExtResource("25_ib4kq")
 abilities = Array[ExtResource("26_2ngqp")]([SubResource("Resource_gi26b")])
 controller = NodePath("../..")
+metadata/_custom_type_script = "uid://ca4cc4qw8y26o"
 
 [node name="DashComponent" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
 script = ExtResource("22_0jq7x")
@@ -166,6 +229,7 @@ max_ground_slam_angle = 15.0
 ground_slam_bonus_strength = 25.0
 component_name = "dash_component"
 controller = NodePath("../..")
+metadata/_custom_type_script = "uid://kw6iksxlfd4b"
 
 [node name="FallDampener" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
 script = ExtResource("11_okuww")
@@ -184,22 +248,26 @@ metadata/_custom_type_script = "uid://dp5554hrflodi"
 
 [node name="MovementComponent" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
 script = ExtResource("7_rikgj")
+can_sprint = null
+toggle_sprint = null
+movement_type = null
+speed = null
+sprint_multiplier = null
 wall_multiplier = 0.4
 accel = 65.0
 decel = 35.0
-wall_decel = 20.0
-airborne_accel = 50.0
-airborne_decel = 10.0
-max_dir_angle = 35.0
-velocity_deadzone = 16.0
+airborne_accel = 30.0
+airborne_decel = 5.0
+max_dir_angle = null
 component_name = "movement_component"
+active = null
 controller = NodePath("../..")
 metadata/_custom_type_script = "uid://cc5ywuhm56u55"
 
 [node name="WallJumpComponent" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
 script = ExtResource("17_g5f5o")
-push_strength_horizontal = 25.0
-push_strength_vertical = 15.0
+push_strength_horizontal = 24.0
+push_strength_vertical = 18.0
 mask = 2
 wall_jump_cooldown = 0.1
 component_name = "wall_jump_component"

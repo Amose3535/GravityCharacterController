@@ -9,6 +9,8 @@ class_name WallJumpComponent
 @export var push_strength_horizontal: float = 8.0 
 ## Vertical force applied during the pushing
 @export var push_strength_vertical: float = 6.0 
+## The layers the ShapeCast3D will check for collisions
+@export_flags_3d_physics var mask: int = 1
 ## Radius of wall detection for push strength
 @export var wall_check_radius_margin: float = 0.1 
 ## How many wall contacts there can be at one time
@@ -19,7 +21,7 @@ class_name WallJumpComponent
 
 #region VARIABLES
 ## ShapeCast used for wall(s) detection
-@onready var wall_check_shape_cast: ShapeCast3D = ShapeCast3D.new()
+@onready var wall_check_shape_cast: ShapeCast3D = null
 ## Cooldown timer (able to jump when timer<= 0)
 var cooldown_timer: float = 0.0
 #endregion VARIABLES
@@ -37,9 +39,11 @@ func _physics_process(delta: float) -> void:
 func _setup_shape_cast() -> void:
 	# Create new shapecast, add it to the controller and configure it
 	if !wall_check_shape_cast: wall_check_shape_cast = ShapeCast3D.new() # Create new shapecast when necessary
-	controller.add_child.call_deferred(wall_check_shape_cast) # Add new shapecast to controller (but do it deferredly to prevent problems)
+	wall_check_shape_cast.name = "JumpCast"
+	controller.add_child.call_deferred(wall_check_shape_cast, true) # Add new shapecast to controller (but do it deferredly to prevent problems)
 	wall_check_shape_cast.position = controller.collision_shape.position # Set its position relative to the controller to the same position as the collision shape
 	wall_check_shape_cast.add_exception(controller) # Add as shapecast exception the controller
+	wall_check_shape_cast.collision_mask = mask
 	
 	var sphere_shape = SphereShape3D.new()
 	var base_radius = _get_player_radius()
@@ -88,7 +92,7 @@ func _handle_wall_jump() -> void:
 	if abs(resulting_normal.dot(controller.up_direction)) > cos(deg_to_rad(controller.floor_max_angle)): return
 	
 	# Compute horizontal component (along contribution normal)
-	var horizontal_push: Vector3 = resulting_normal.normalized() * push_strength_horizontal
+	var horizontal_push: Vector3 = project_on_plane(resulting_normal, controller.up_direction).normalized() * push_strength_horizontal
 	
 	# Compute vertical component (along up_direction)
 	var vertical_push: Vector3 = controller.up_direction * push_strength_vertical
@@ -103,3 +107,7 @@ func _handle_wall_jump() -> void:
 func _update_cooldown_timer(delta : float) -> void:
 	if cooldown_timer > 0.0:
 		cooldown_timer -= delta
+
+
+static func project_on_plane(v: Vector3, n: Vector3) -> Vector3:
+	return v - n * v.dot(n)

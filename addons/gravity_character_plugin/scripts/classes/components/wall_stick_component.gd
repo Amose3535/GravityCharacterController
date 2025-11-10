@@ -6,13 +6,26 @@ class_name WallStickComponent
 #region EXPORTS
 ## Forza che spinge il personaggio nel muro (per l'adesione).
 @export var stick_force: float = 30.0
-## Raggio di rilevamento (margine dal raggio del player).
+## What layers will the ShapeCast3D check for collisions
+@export_flags_3d_physics var mask: int = 1
+## Extra margin to add on the player's collision radius to have the final margin used as check
 @export var wall_check_radius_margin: float = 0.1
 ## Max results che lo ShapeCast può restituire.
 @export var max_wall_contacts: int = 8
+## This determines the smallest angle between the player's down direction (-gravity_direction.normalized()) and the resulting normal. Hence if the opposite of the resulting normal (because the force is applied using -resulting_normal) goes too near to this angle, and hang_to_wall_end is set to false, then it will fall, otherwise it will stop
+@export var max_wall_normal_angle: float = 90.0
+## When reaching the end of a wall suspended in air, it decides wether to try to hang to the ledge or not
+@export var hang_to_wall_end: bool = true
+## When reaching the end of a wall, if you can hang to it, this determines wether you stop at the end or keep wobbling up and down
+@export var stop_at_wall_end: bool = true
 #endregion EXPORTS
 
-@onready var wall_shapecast: ShapeCast3D = ShapeCast3D.new()
+@onready var wall_shapecast: ShapeCast3D = null
+
+var reached_wall_end: bool = false:
+	set(new_state):
+		reached_wall_end = new_state
+		controller.gravity_enabled = !reached_wall_end
 
 
 func _ready() -> void:
@@ -21,38 +34,67 @@ func _ready() -> void:
 	_setup_wall_shapecast()
 
 
+
 func _physics_process(delta: float) -> void:
 	_stick_to_wall(delta)
+	#print("Reached end of wall? " + ("Yes" if reached_wall_end else "No"))
 
-
+# TODO: Fix this shit cause for whatever reason i'm so stupid that it won't work
 ## Applies small force to stick player to wall
 func _stick_to_wall(delta: float) -> void:
+	if !wall_shapecast: return
 	if !wall_shapecast.is_inside_tree(): return
 	wall_shapecast.force_shapecast_update()
 	
-	if !wall_shapecast.is_colliding(): return
+	if !wall_shapecast.is_colliding(): 
+		reached_wall_end = false
+		return
+	
 	
 	var collision_count: int = wall_shapecast.get_collision_count()
 	if collision_count == 0: return
+	#reached_wall_end = false
 	
 	var resulting_normal: Vector3 = Vector3.ZERO
-	for i in range(collision_count):
-		resulting_normal += wall_shapecast.get_collision_normal(i)
+	var gravity_dir: Vector3 = controller.gravity_direction.normalized()
+	var dot_threshold: float = cos(deg_to_rad(max_wall_normal_angle)) # La tua soglia originale
 	
-	if abs(resulting_normal.dot(controller.up_direction)) > cos(deg_to_rad(controller.floor_max_angle)): return
+	#print("--------- PLS WORK ---------")
+	#print("Normals found: %d"%collision_count)
+	for i in range(collision_count):
+		var normal : Vector3 = wall_shapecast.get_collision_normal(i)
+		resulting_normal += normal
+		var dot_product = normal.dot(gravity_dir)
+		if dot_product > dot_threshold:
+			reached_wall_end = true
+			#print("Reached wall end (Bottom/Floor detected)!")
+			break
+		else:
+			reached_wall_end = false
+		#print("Normal {i})\nNormal vector: {vec},\nGravity dir: {gdir},\nDot prod: {dpd},\nDot threshold: {thrsh}\n\n")
+	#print("----------------------------")
 	
 	var velocity : Vector3 = Vector3.ZERO
 	velocity += -resulting_normal * stick_force
 	
-	controller.velocity += velocity
+	# Apply sticking force ONLY when is on wall EXCLUSIVELY (or you might get stuck to walls at ground level)
+	if !controller.is_on_wall_only(): return
+	if !reached_wall_end:
+		controller.velocity += velocity
+	else:
+		if hang_to_wall_end:
+			if stop_at_wall_end && !Input.is_action_pressed("jump"):
+				controller.velocity -= controller.get_vertical_velocity()
+		else:
+			controller.velocity += velocity
 
 ## Configura e aggiunge lo ShapeCast al Controller.
 func _setup_wall_shapecast() -> void:
-	if !wall_shapecast: return
-	
-	# Assicura che il nodo sia aggiunto in sicurezza (risolve il crash del ready)
-	controller.call_deferred("add_child", wall_shapecast)
+	if !wall_shapecast: wall_shapecast = ShapeCast3D.new()
+	wall_shapecast.name = "StickCast"
+	controller.add_child.call_deferred(wall_shapecast, true)
 	wall_shapecast.add_exception(controller)
+	wall_shapecast.collision_mask = mask
 	
 	var sphere_shape = SphereShape3D.new()
 	var base_radius = _get_player_radius()

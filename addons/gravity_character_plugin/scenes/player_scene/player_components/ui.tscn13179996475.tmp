@@ -1,0 +1,101 @@
+[gd_scene load_steps=11 format=3 uid="uid://dlpsp7hpr3kcu"]
+
+[ext_resource type="Script" uid="uid://bm6osf1gedyv" path="res://addons/gravity_character_plugin/scenes/player_scene/player_components/ui.gd" id="1_3poj1"]
+[ext_resource type="Texture2D" uid="uid://bd3qwl2rf2iu6" path="res://addons/gravity_character_plugin/assets/textures/reticles/dot/dot.png" id="1_cct1q"]
+[ext_resource type="Texture2D" uid="uid://b67bmgcptd0ls" path="res://addons/kenney_prototype_textures/dark/texture_07.png" id="2_15yuj"]
+[ext_resource type="Material" uid="uid://0w5iieaw2ntq" path="res://assets/shaders/invert/invert_material.tres" id="2_hfds5"]
+[ext_resource type="Material" uid="uid://cmvh8e15vbcgi" path="res://addons/gravity_character_plugin/scenes/player_scene/player_components/hurt.tres" id="2_hjt2b"]
+[ext_resource type="Texture2D" uid="uid://cggojbkt772xh" path="res://assets/icons/Dash/BoltEmpty.png" id="4_wha4t"]
+[ext_resource type="Texture2D" uid="uid://51j21y383fhy" path="res://assets/icons/Dash/BoltFull.png" id="5_ddi86"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hjt2b"]
+atlas = ExtResource("2_15yuj")
+region = Rect2(2, 2, 203.11725, 44.85138)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_15yuj"]
+load_path = "res://.godot/imported/texture_08.png-add0c08e78cde6ad4eaac64e7b9a9204.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i4606"]
+atlas = SubResource("CompressedTexture2D_15yuj")
+region = Rect2(2, 2, 203.11725, 44.85138)
+
+[node name="UI" type="CanvasLayer"]
+follow_viewport_enabled = true
+script = ExtResource("1_3poj1")
+
+[node name="LowHealth" type="ColorRect" parent="."]
+visible = false
+material = ExtResource("2_hjt2b")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HurtOverlay" type="ColorRect" parent="."]
+modulate = Color(1, 1, 1, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0, 0, 0.19607843)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="HealthBar" type="TextureProgressBar" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+value = 100.0
+texture_under = SubResource("AtlasTexture_hjt2b")
+texture_progress = SubResource("AtlasTexture_i4606")
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+step = 0.1
+fill_mode = 3
+texture_over = ExtResource("4_wha4t")
+texture_progress = ExtResource("5_ddi86")
+tint_over = Color(1, 1, 0.6901961, 1)
+tint_progress = Color(1, 1, 0, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Dot" type="TextureRect" parent="MarginContainer/CenterContainer"]
+material = ExtResource("2_hfds5")
+layout_mode = 2
+texture = ExtResource("1_cct1q")
+
+[node name="Tooltip" type="RichTextLabel" parent="MarginContainer/CenterContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(350, 0.77)
+layout_mode = 2
+mouse_filter = 2
+bbcode_enabled = true
+text = "
+
+Press [lb]{interact_button}[rb] to interact"
+fit_content = true
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="State" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="FPS" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0

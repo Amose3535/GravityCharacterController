@@ -1,10 +1,11 @@
-[gd_scene load_steps=28 format=3 uid="uid://cn1of62gefhj"]
+[gd_scene load_steps=29 format=3 uid="uid://cn1of62gefhj"]
 
 [ext_resource type="Script" uid="uid://b1oj1tvs8wr20" path="res://addons/gravity_character_plugin/scripts/classes/gravity_character_controller_3d.gd" id="1_jqcdp"]
 [ext_resource type="Script" uid="uid://c7v4kj8ce2edy" path="res://addons/gravity_character_plugin/scripts/classes/components/gravity_hopper_component.gd" id="2_4n7h1"]
 [ext_resource type="Script" uid="uid://dumk1spdmner5" path="res://addons/gravity_character_plugin/scripts/classes/components/component_container.gd" id="2_6oeo6"]
 [ext_resource type="PackedScene" uid="uid://dlpsp7hpr3kcu" path="res://addons/gravity_character_plugin/scenes/player_scene/player_components/ui.tscn" id="2_myhax"]
 [ext_resource type="Script" uid="uid://bcmsamp4ux8r4" path="res://addons/gravity_character_plugin/scripts/classes/state_machine/components_state_machine.gd" id="2_teg1c"]
+[ext_resource type="PackedScene" uid="uid://dxonaynw0m5wn" path="res://addons/gravity_character_plugin/scenes/player_scene/player_components/distortion_effect.tscn" id="3_4ryn3"]
 [ext_resource type="Script" uid="uid://b4denh3wj1xmm" path="res://addons/gravity_character_plugin/scripts/classes/state_machine/states/state_player_idle.gd" id="3_hxx5n"]
 [ext_resource type="Script" uid="uid://bkqburwr7i3ua" path="res://addons/gravity_character_plugin/scripts/classes/components/rotation_component.gd" id="4_obqj8"]
 [ext_resource type="Script" uid="uid://db8p1ewxx0cke" path="res://addons/gravity_character_plugin/scripts/classes/state_machine/states/state_player_fall.gd" id="4_ukkgi"]
@@ -73,6 +74,8 @@ cull_mask = 1048573
 current = true
 fov = 85.0
 
+[node name="DistortionEffect" parent="Head/Camera3D" instance=ExtResource("3_4ryn3")]
+
 [node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("controller", "initial_state")]
 script = ExtResource("2_teg1c")
 permanent_components = Array[String](["rotation_component", "gravity_hopper_component", "mouse_handler_component"])
@@ -128,7 +131,7 @@ metadata/_custom_type_script = "uid://dumk1spdmner5"
 [node name="[P]GravityHopperComponent" type="Node" parent="Components" node_paths=PackedStringArray("controller")]
 script = ExtResource("2_4n7h1")
 changeable = true
-gravity_change_mask = 3
+gravity_change_mask = 10
 active = false
 controller = NodePath("../..")
 metadata/_custom_type_script = "uid://c7v4kj8ce2edy"

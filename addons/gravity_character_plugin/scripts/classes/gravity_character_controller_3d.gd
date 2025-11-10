@@ -11,8 +11,14 @@ class_name GravityController3D
 @export var collision_shape : CollisionShape3D = null
 ## The ComponentContainer node. Not necessary but useful when making a complex character component. It's to be considered as mandatory when using the premade components
 @export var component_container : ComponentContainer = null
+## The state machine node. Not necessary but useful to handle animations directly
+@export var state_machine: ComponentStateMachine = null
 
 @export_group("Gravity related")
+## Wether the gravity is enabled or not
+@export var gravity_enabled: bool = true
+## Wether the rotation should be immediate or not
+@export var immediate_align: bool = false
 ## The speed at which the body will rotate (with its feet DOWN) towards the desired direction
 @export var align_speed : float = 5.0
 ## Toggles cooldown for gravity direction changes
@@ -36,7 +42,6 @@ func _physics_process(delta: float) -> void:
 	_align_controller_with_gravity(delta)
 	_update_last_gravity_change(delta)
 	_apply_gravity(delta)
-	#_debug_last_ground_contact(delta)
 	move_and_slide() # Move and slide function. Preferred over move_and_collide()
 
 
@@ -81,7 +86,10 @@ func _align_controller_with_gravity(delta: float) -> void:
 	var target_basis : Basis = Basis.looking_at(desired_forward, up_direction)
 	
 	# 2. Interpolazione (rotazione graduale)
-	global_transform.basis = global_transform.basis.slerp(target_basis, align_speed * delta)
+	#print(global_transform.basis,global_transform.basis.slerp(target_basis, align_speed * delta))
+	
+	var target: Basis = global_transform.basis.slerp(target_basis, align_speed * delta) if !immediate_align else global_transform.basis.slerp(target_basis, 1)
+	global_transform.basis = target
 
 ## API used to wrap the gravity_direction setter with support for cooldown etc.
 func set_new_gravity_direction(new_dir: Vector3, force: bool = !gravity_change_cooldown) -> bool:
@@ -107,6 +115,7 @@ func set_new_gravity_direction(new_dir: Vector3, force: bool = !gravity_change_c
 	return true
 
 func _apply_gravity(delta: float) -> void:
+	if !gravity_enabled: return
 	# Not airborne
 	if is_on_floor():
 		return
@@ -120,6 +129,8 @@ func _debug_last_ground_contact(delta : float) -> void:
 	else:
 		last_ground_contact = 0
 #endregion GRAVITY
+
+
 
 ## Returns a Vector2 containing the horizontal input direction of the player.
 func get_input_vector() -> Vector2:

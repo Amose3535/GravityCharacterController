@@ -1,5 +1,5 @@
 # state_player_walk.gd
-extends PlayerState
+extends ComponentState
 class_name PlayerWalkState
 ## The class that represents the walk state in the FSM. Like all State nodes, it must be a direct child of the FSM node.
 
@@ -11,6 +11,9 @@ func _on_update(delta : float) -> void:
 	if controller.is_on_floor():
 		if controller.velocity.is_equal_approx(Vector3.ZERO):
 			transitioned.emit("idle", self)
+			return
+		if Input.is_action_pressed("dash"):
+			transitioned.emit("dash", self)
 			return
 	else:
 		if controller.is_on_wall() and controller.get_vertical_velocity_scalar() < 0:

@@ -1,5 +1,5 @@
 # state_player_fall.gd
-extends PlayerState
+extends ComponentState
 class_name PlayerFallState
 ## The class that represents the Fall state in the FSM. Like all State nodes, it must be a direct child of the FSM node.
 
@@ -20,4 +20,9 @@ func _on_update(delta : float) -> void:
 		if controller.is_on_wall():
 			if controller.get_vertical_velocity_scalar() < 0:
 				transitioned.emit("on_wall", self)
+				return
+		else:
+			if Input.is_action_just_pressed("dash"):
+				#print("MAMMMA MIAAA")
+				transitioned.emit("dash", self)
 				return
